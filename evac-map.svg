@@ -1,0 +1,345 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 8 862 702" width="1724" height="1404" role="img" aria-labelledby="t">
+  <title id="t">이수스페셜티케미컬 온산공장 배치도 (비상대피로 안내용)</title>
+  <style>
+    .ground{fill:#f3f1f8}
+    .site{fill:#fff;stroke:#3a3450;stroke-width:2;stroke-linejoin:round}
+    .zone{fill:none;stroke:#cbc7d8;stroke-width:1}
+    .blk{fill:#faf9fc;stroke:#aaa5bb;stroke-width:1}
+    .div{fill:none;stroke:#cfcbdb;stroke-width:.8}
+    .lot{fill:#f4f3f8;stroke:#aaa5bb;stroke-width:1}
+    .bld{fill:#f1f0f6;stroke:#857f9a;stroke-width:1.1}
+    .bdiv{fill:none;stroke:#8f8aa3;stroke-width:.8}
+    .sm{fill:#fff;stroke:#8f8aa3;stroke-width:.8}
+    .tank{fill:#fff;stroke:#a19cb3;stroke-width:.85}
+    .sym{fill:#fff;stroke:#4a4460;stroke-width:1}
+    .symln{fill:none;stroke:#4a4460;stroke-width:1}
+    .symf{fill:#6d6782}
+    .lu{fill:#e3ecf7;stroke:#9cb0c8;stroke-width:.8}
+    .lt{fill:#eef0e1;stroke:#b3b596;stroke-width:.8}
+    .lc{fill:#fbe7d8;stroke:#dcae8f;stroke-width:.8}
+    .wh{fill:#fff;stroke:#8f8aa3;stroke-width:.8}
+    .area{fill:#fff;stroke:#8f8aa3;stroke-width:.8}
+    text{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Noto Sans CJK KR","Malgun Gothic","맑은 고딕",sans-serif;
+         fill:#26213a;text-anchor:middle;letter-spacing:-.02em}
+    .b{font-weight:700}
+    .m{font-weight:500;fill:#4b465f}
+    .h{paint-order:stroke;stroke:#fff;stroke-width:2.2px;stroke-linejoin:round}
+  </style>
+  <rect class="ground" x="0" y="8" width="862" height="702"/>
+  <!-- 공장 경계 -->
+  <g id="site">
+    <path class="site" d="M3.5 705L3.5 184L209.5 37L487 37L857.5 14.5L857.5 705Z"/>
+  </g>
+  <!-- 구역선(도로·구획) -->
+  <g id="zone">
+    <path class="zone" d="M158.5 304L158.5 208.5L277.5 208.5"/>
+    <rect class="zone" x="277.5" y="138" width="228" height="166"/>
+    <path class="zone" d="M129 304L505.5 304"/>
+    <rect class="zone" x="537" y="195" width="175" height="77.5"/>
+    <path class="zone" d="M520 300L837.5 300"/>
+    <path class="zone" d="M520 300L520 417"/>
+    <path class="zone" d="M546 300L546 532"/>
+    <path class="zone" d="M835 307.5L835 532"/>
+    <path class="zone" d="M771 307.5L771 519"/>
+    <path class="zone" d="M771 307.5L835 307.5"/>
+    <path class="zone" d="M546 519L835 519"/>
+    <rect class="zone" x="767" y="170.5" width="70.5" height="107.5"/>
+    <path class="zone" d="M763.75 291.5L787.5 283L837.5 283L837.5 300L787.5 300Z"/>
+    <path class="zone" d="M787.5 283L787.5 300"/>
+    <rect class="zone" x="73" y="543.5" width="99.5" height="85"/>
+    <path class="zone" d="M159 543.5L159 628.5"/>
+    <rect class="zone" x="45" y="638" width="125.5" height="45"/>
+    <path class="zone" d="M148.5 638L148.5 683"/>
+    <rect class="zone" x="539" y="554" width="311.5" height="149.5"/>
+  </g>
+  <!-- S/S Tank 1단지 블록 -->
+  <g id="block">
+    <rect class="blk" x="209.5" y="43.5" width="132" height="79"/>
+    <rect class="blk" x="341.5" y="43.5" width="152" height="79"/>
+    <rect class="blk" x="493.5" y="56" width="106" height="66.5"/>
+    <path class="div" d="M209.5 61.5L341.5 61.5"/>
+    <path class="div" d="M209.5 109L341.5 109"/>
+    <path class="div" d="M341.5 115L599.5 115"/>
+  </g>
+  <!-- 탱크 -->
+  <g id="tank">
+    <ellipse class="tank" cx="253.3" cy="52.3" rx="6.7" ry="5.3"/>
+    <ellipse class="tank" cx="273.4" cy="52.3" rx="6.7" ry="5.3"/>
+    <ellipse class="tank" cx="291.4" cy="51.8" rx="6.8" ry="5.4"/>
+    <ellipse class="tank" cx="309.4" cy="52" rx="6.8" ry="5.4"/>
+    <ellipse class="tank" cx="328.8" cy="52.4" rx="6.7" ry="5.3"/>
+    <ellipse class="tank" cx="246" cy="74.8" rx="9.3" ry="7.8"/>
+    <ellipse class="tank" cx="280.8" cy="74.8" rx="8.9" ry="7.8"/>
+    <ellipse class="tank" cx="317.5" cy="74" rx="9" ry="8.5"/>
+    <ellipse class="tank" cx="258.5" cy="90.8" rx="5.7" ry="4.8"/>
+    <ellipse class="tank" cx="257.9" cy="101.8" rx="5.8" ry="4.8"/>
+    <ellipse class="tank" cx="280.6" cy="96.7" rx="9.4" ry="8"/>
+    <ellipse class="tank" cx="304" cy="94.5" rx="8" ry="6.2"/>
+    <ellipse class="tank" cx="234.2" cy="100.2" rx="7.9" ry="6.8"/>
+    <ellipse class="tank" cx="357.2" cy="52.5" rx="9.2" ry="6.7"/>
+    <ellipse class="tank" cx="380.3" cy="53.2" rx="9.2" ry="7"/>
+    <ellipse class="tank" cx="413.2" cy="56.4" rx="8.7" ry="8.3"/>
+    <ellipse class="tank" cx="454" cy="57.7" rx="9" ry="8"/>
+    <ellipse class="tank" cx="357.3" cy="70" rx="8.8" ry="7.5"/>
+    <circle class="tank" cx="357.3" cy="84" r="7"/>
+    <ellipse class="tank" cx="390.5" cy="78.5" rx="9" ry="10.5"/>
+    <ellipse class="tank" cx="431" cy="78.7" rx="8.5" ry="11"/>
+    <ellipse class="tank" cx="474" cy="80.3" rx="8.5" ry="10.5"/>
+    <ellipse class="tank" cx="412.2" cy="90.5" rx="8" ry="7.8"/>
+    <circle class="tank" cx="453.5" cy="91.5" r="8"/>
+    <ellipse class="tank" cx="356.8" cy="99.9" rx="8.9" ry="6.8"/>
+    <ellipse class="tank" cx="390" cy="100.3" rx="7.9" ry="6.7"/>
+    <ellipse class="tank" cx="431.5" cy="101.7" rx="8.2" ry="6.7"/>
+    <ellipse class="tank" cx="475" cy="100.5" rx="7.9" ry="6.9"/>
+    <ellipse class="tank" cx="516" cy="72.2" rx="9.3" ry="7.8"/>
+    <ellipse class="tank" cx="546.3" cy="68.2" rx="8.2" ry="6.3"/>
+    <ellipse class="tank" cx="574.3" cy="72" rx="9.3" ry="7.9"/>
+    <ellipse class="tank" cx="545.5" cy="85.4" rx="8.3" ry="6"/>
+    <ellipse class="tank" cx="516" cy="98.6" rx="9.3" ry="8.2"/>
+    <ellipse class="tank" cx="545.5" cy="101.2" rx="8.3" ry="6.3"/>
+    <ellipse class="tank" cx="574.3" cy="98.8" rx="9.3" ry="8.1"/>
+    <circle class="tank" cx="166.5" cy="145.3" r="6"/>
+    <ellipse class="tank" cx="175.9" cy="178.8" rx="12" ry="11.8"/>
+    <circle class="tank" cx="605.6" cy="156.5" r="9.8"/>
+    <circle class="tank" cx="785.6" cy="183.4" r="10.2"/>
+    <circle class="tank" cx="818.5" cy="182.6" r="10.2"/>
+    <circle class="tank" cx="785.9" cy="208.2" r="10"/>
+    <circle class="tank" cx="818.6" cy="207.8" r="10"/>
+    <circle class="tank" cx="786.2" cy="232.8" r="10"/>
+    <circle class="tank" cx="818.7" cy="232.4" r="10"/>
+    <circle class="tank" cx="786.6" cy="257.5" r="10.1"/>
+    <circle class="tank" cx="818.9" cy="257" r="10.3"/>
+    <ellipse class="tank" cx="597.2" cy="353.8" rx="32.2" ry="29.5"/>
+    <ellipse class="tank" cx="723.7" cy="353.8" rx="33" ry="29.5"/>
+    <ellipse class="tank" cx="659.5" cy="413.3" rx="32.2" ry="30"/>
+    <ellipse class="tank" cx="589.3" cy="413.8" rx="16.7" ry="16.2"/>
+    <ellipse class="tank" cx="726.2" cy="414.5" rx="16.2" ry="15.5"/>
+    <ellipse class="tank" cx="599.7" cy="467.2" rx="33.7" ry="30.5"/>
+    <ellipse class="tank" cx="723.8" cy="467.7" rx="35.5" ry="30"/>
+    <ellipse class="tank" cx="796.8" cy="325.8" rx="16" ry="14.2"/>
+    <ellipse class="tank" cx="796.8" cy="365.8" rx="16" ry="14.2"/>
+    <ellipse class="tank" cx="797" cy="405.5" rx="15.7" ry="13.8"/>
+    <ellipse class="tank" cx="797" cy="445.8" rx="13.7" ry="14.2"/>
+    <ellipse class="tank" cx="797" cy="482.8" rx="13.7" ry="14"/>
+    <circle class="tank" cx="561.7" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="592.3" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="625" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="658.3" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="687.7" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="722.7" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="756.7" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="786.7" cy="512.5" r="5.8"/>
+    <circle class="tank" cx="814" cy="512.5" r="5.8"/>
+    <ellipse class="tank" cx="93.5" cy="560.5" rx="12.3" ry="12.1"/>
+    <ellipse class="tank" cx="125" cy="559.2" rx="12" ry="12.2"/>
+    <circle class="tank" cx="93.5" cy="586" r="8"/>
+    <circle class="tank" cx="124.6" cy="586" r="12"/>
+    <ellipse class="tank" cx="93.7" cy="612.5" rx="12.2" ry="11.6"/>
+    <ellipse class="tank" cx="123.4" cy="612.5" rx="11" ry="11.5"/>
+    <circle class="tank" cx="146.5" cy="602.5" r="6.5"/>
+    <ellipse class="tank" cx="146.2" cy="618.5" rx="6.6" ry="6.5"/>
+    <circle class="tank" cx="71.5" cy="651.5" r="10.6"/>
+    <circle class="tank" cx="99" cy="651.5" r="10.8"/>
+    <circle class="tank" cx="125" cy="651.5" r="10.6"/>
+    <ellipse class="tank" cx="59" cy="670.4" rx="11" ry="10.8"/>
+    <ellipse class="tank" cx="85" cy="670.4" rx="11" ry="10.8"/>
+    <ellipse class="tank" cx="111" cy="670.4" rx="11" ry="10.8"/>
+    <ellipse class="tank" cx="135.8" cy="670.4" rx="9.8" ry="10.4"/>
+  </g>
+  <!-- 건물 -->
+  <g id="bld">
+    <path class="bld" d="M43.5 171.5L99.5 131L128.5 131L128.5 171.5Z"/>
+    <path class="bdiv" d="M99.5 131L99.5 171.5"/>
+    <rect class="bld" x="43.5" y="171.5" width="85" height="69.5"/>
+    <rect class="bld" x="49.5" y="241" width="75" height="63"/>
+    <rect class="sm" x="50" y="242.5" width="14.5" height="22.5"/>
+    <rect class="sm" x="159" y="76" width="37" height="13"/>
+    <rect class="sm" x="158" y="89" width="35.5" height="18.5"/>
+    <rect class="sm" x="129" y="98" width="29" height="23.5"/>
+    <rect class="sm" x="145.75" y="153.5" width="14.5" height="39"/>
+    <rect class="bld" x="238.25" y="147.5" width="32.5" height="50"/>
+    <rect class="bld" x="284.5" y="147" width="33" height="37.5"/>
+    <rect class="bld" x="180.5" y="221" width="58.5" height="30.5"/>
+    <rect class="bld" x="178.5" y="275" width="58" height="16.5"/>
+    <rect class="lot" x="397" y="138" width="108.5" height="123.5"/>
+    <rect class="bld" x="711" y="26" width="44.5" height="16"/>
+    <rect class="bld" x="625.5" y="45" width="220" height="29.5"/>
+    <path class="bdiv" d="M703 45L703 74.5"/>
+    <path class="bdiv" d="M755.5 45L755.5 74.5"/>
+    <rect class="bld" x="673.75" y="117" width="47" height="7.5"/>
+    <rect class="bld" x="767.5" y="118" width="47" height="7.5"/>
+    <rect class="bld" x="700.5" y="141" width="42" height="15.5"/>
+    <rect class="bld" x="745" y="141" width="44.5" height="15.5"/>
+    <rect class="bld" x="815" y="154" width="38.5" height="18"/>
+    <rect class="bld" x="628" y="148.5" width="50.5" height="29"/>
+    <rect class="bld" x="523" y="140" width="15" height="29"/>
+    <rect class="bld" x="538" y="148.5" width="52.5" height="20"/>
+    <rect class="bld" x="554" y="207.5" width="103.5" height="56"/>
+    <rect class="bld" x="657.5" y="227.5" width="15" height="24"/>
+    <rect class="bld" x="68" y="322.5" width="307" height="49.5"/>
+    <rect class="bld" x="68" y="379" width="307" height="34"/>
+    <rect class="bld" x="390.5" y="322" width="112.5" height="51"/>
+    <rect class="bld" x="390.5" y="379" width="112.5" height="33.5"/>
+    <rect class="bld" x="61.5" y="446.5" width="79" height="64.5"/>
+    <rect class="sm" x="41" y="473" width="13.5" height="44"/>
+    <rect class="bld" x="182.5" y="440" width="43" height="71"/>
+    <path class="bdiv" d="M182.5 479.5L225.5 479.5"/>
+    <rect class="bld" x="225.5" y="459" width="25" height="30.5"/>
+    <rect class="bld" x="225.5" y="489.5" width="34" height="21.5"/>
+    <rect class="bld" x="256" y="453.5" width="29.5" height="27.5"/>
+    <rect class="bld" x="285.5" y="441.5" width="74" height="39.5"/>
+    <rect class="bld" x="276" y="485" width="110" height="32.5"/>
+    <rect class="bld" x="404.5" y="434.5" width="15.5" height="28"/>
+    <rect class="bld" x="403.5" y="468.5" width="33" height="27.5"/>
+    <rect class="bld" x="403.75" y="499.5" width="29.75" height="15"/>
+    <rect class="bld" x="462.5" y="436.5" width="33" height="28"/>
+    <path class="bdiv" d="M462.5 450.5L495.5 450.5"/>
+    <rect class="bld" x="466.5" y="474" width="25" height="40.5"/>
+    <path class="bdiv" d="M466.5 500L491.5 500"/>
+    <rect class="bld" x="180.5" y="554" width="74" height="53"/>
+    <rect class="bld" x="290.5" y="555" width="84" height="38.5" rx="5"/>
+    <rect class="bld" x="307.5" y="618" width="89" height="33.5"/>
+    <rect class="bld" x="404" y="618" width="101.5" height="33.5"/>
+    <rect class="bld" x="387" y="662" width="118.5" height="38.5"/>
+    <rect class="bld" x="545.25" y="561.5" width="36.25" height="29"/>
+    <rect class="bld" x="595.25" y="566.5" width="52.5" height="25.75"/>
+    <rect class="bld" x="657.5" y="566" width="130" height="43.5"/>
+    <rect class="bld" x="624.5" y="620" width="75" height="52.5"/>
+    <path class="bdiv" d="M658 620L658 672.5"/>
+    <rect class="bld" x="711.5" y="620" width="38" height="41.5"/>
+    <rect class="bld" x="765.75" y="642.5" width="46.75" height="45"/>
+    <rect class="bld" x="821.5" y="581.5" width="21.5" height="40"/>
+    <rect class="bld" x="557" y="632.5" width="40.75" height="29.25"/>
+    <circle class="tank" cx="243.5" cy="500.2" r="5.6"/>
+    <circle class="tank" cx="485" cy="443.3" r="5.6"/>
+    <circle class="tank" cx="485.2" cy="457.2" r="5.8"/>
+    <rect class="sym" x="184.5" y="565.5" width="16" height="16"/>
+    <path class="symln" d="M192.5 565.5L192.5 572.7"/>
+    <path class="symf" d="M186.9 572.7A5.6 5.6 0 0 0 198.1 572.7Z"/>
+    <rect class="sym" x="204" y="565.5" width="16" height="16"/>
+    <path class="symln" d="M212 565.5L212 572.7"/>
+    <path class="symf" d="M206.4 572.7A5.6 5.6 0 0 0 217.6 572.7Z"/>
+  </g>
+  <!-- 이름표 상자 -->
+  <g id="label">
+    <rect class="lt" x="298" y="70" width="222" height="17.5"/>
+    <rect class="sm" x="509" y="43.5" width="90.5" height="12.5"/>
+    <rect class="lt" x="770" y="204" width="54" height="33"/>
+    <rect class="lu" x="66.5" y="212.5" width="36" height="16.5"/>
+    <rect class="lu" x="165" y="335.5" width="139" height="16"/>
+    <rect class="lu" x="166" y="389.5" width="139" height="16.5"/>
+    <rect class="lu" x="395.75" y="332" width="38.75" height="21.75"/>
+    <rect class="lu" x="454" y="327" width="36" height="30"/>
+    <rect class="lu" x="404.5" y="382" width="22" height="14.5"/>
+    <rect class="lu" x="190" y="450" width="35.5" height="16.5"/>
+    <rect class="lu" x="190" y="486.5" width="35.5" height="16"/>
+    <rect class="lc" x="308" y="454" width="36.5" height="16"/>
+    <rect class="lu" x="292.5" y="493" width="67" height="16.5"/>
+    <rect class="lu" x="406" y="476.75" width="28.5" height="12.75"/>
+    <rect class="lu" x="466" y="479.5" width="26" height="16.5"/>
+    <rect class="lt" x="629" y="349" width="57" height="33"/>
+    <rect class="lt" x="74.5" y="576.6" width="77" height="17"/>
+    <rect class="lt" x="57.5" y="653" width="79" height="16.4"/>
+    <rect class="lu" x="319" y="628" width="68.5" height="16"/>
+    <rect class="lu" x="422.5" y="627.5" width="67.5" height="16.5"/>
+    <rect class="lu" x="416.5" y="672.5" width="67" height="16"/>
+    <rect class="lu" x="659.5" y="575" width="51.5" height="27.5"/>
+    <rect class="lu" x="729.5" y="576" width="51.5" height="27.5"/>
+    <rect class="lu" x="630.5" y="629" width="66.5" height="16"/>
+    <rect class="lu" x="711.5" y="624.5" width="38" height="16.5"/>
+    <rect class="wh" x="669.5" y="659" width="28" height="11.5"/>
+    <rect class="lt" x="770.5" y="649" width="37.5" height="33.5"/>
+    <rect class="lu" x="558.25" y="664.25" width="42.25" height="26.5"/>
+    <rect class="area" x="683.5" y="312.5" width="47" height="10" rx="3"/>
+  </g>
+  <!-- 글자 -->
+  <g id="text">
+    <text class="b" x="409" y="82.35" font-size="10">S/S Tank 1단지</text>
+    <text class="m" x="554.25" y="52.6" font-size="7.5">옥내저장소</text>
+    <text class="b" x="664.25" y="62.99" font-size="9">구 연구동</text>
+    <text class="b" x="729.25" y="62.99" font-size="9">신 연구동</text>
+    <text class="b" x="800.5" y="62.99" font-size="9">본관동</text>
+    <text class="m" x="177.5" y="84.47" font-size="5.2">옥내저장소</text>
+    <text class="m" x="175.75" y="95.82" font-size="5.2">구매창고</text>
+    <text class="m" x="175.75" y="104.42" font-size="5.2">변전실</text>
+    <text class="m" x="143.5" y="111.7" font-size="5">폐지/목재</text>
+    <text class="m" x="153" y="163.02" font-size="5.6">재</text>
+    <text class="m" x="153" y="175.02" font-size="5.6">고</text>
+    <text class="m" x="153" y="187.02" font-size="5.6">실</text>
+    <text class="b" x="254.5" y="169.7" font-size="7.5">변전실,</text>
+    <text class="b" x="254.5" y="180.7" font-size="7.5">창고</text>
+    <text class="b" x="301" y="162.73" font-size="6.2">Flexible</text>
+    <text class="b" x="301" y="174.38" font-size="8">출하장</text>
+    <text class="b" x="338" y="219.42" font-size="9.5">Future</text>
+    <text class="b" x="338" y="231.42" font-size="9.5">Area</text>
+    <text class="b" x="452" y="201.1" font-size="10">주차장</text>
+    <text class="b" x="84.5" y="223.96" font-size="8.5">Utility</text>
+    <text class="b" x="87" y="272.74" font-size="9">공무동</text>
+    <text class="m" x="209.75" y="238.92" font-size="7">배관반</text>
+    <text class="m" x="207.5" y="285.92" font-size="7">작업장</text>
+    <text class="b" x="605.75" y="239.2" font-size="10">옥외저장소</text>
+    <text class="m" x="564.25" y="160.83" font-size="6.2">소방펌프실</text>
+    <text class="m" x="605.6" y="155.74" font-size="4">TK-</text>
+    <text class="m" x="605.6" y="160.34" font-size="4">1790</text>
+    <text class="m" x="653.25" y="165.8" font-size="7.5">식당</text>
+    <text class="m" x="834.25" y="165.55" font-size="6.8">경비실</text>
+    <text class="b" x="797" y="218.16" font-size="8.5">S/S Tank</text>
+    <text class="b" x="797" y="229.16" font-size="8.5">2단지</text>
+    <text class="b" x="234.5" y="347.02" font-size="9.5">NP</text>
+    <text class="b" x="235.5" y="401.32" font-size="9.5">NP / SS</text>
+    <text class="b" x="415.1" y="341.06" font-size="4.9">Amine, SRU</text>
+    <text class="b" x="415.1" y="348.46" font-size="4.9">TGTU, 소각로</text>
+    <text class="b" x="472" y="339.62" font-size="7">폐수</text>
+    <text class="b" x="472" y="349.62" font-size="7">처리장</text>
+    <text class="b" x="415.5" y="392.46" font-size="8.5">H2</text>
+    <text class="m" x="101" y="481.49" font-size="7.2">신축조정실</text>
+    <text class="m" x="47.75" y="480.54" font-size="5.4">옥</text>
+    <text class="m" x="47.75" y="488.74" font-size="5.4">내</text>
+    <text class="m" x="47.75" y="496.94" font-size="5.4">저</text>
+    <text class="m" x="47.75" y="505.14" font-size="5.4">장</text>
+    <text class="m" x="47.75" y="513.34" font-size="5.4">소</text>
+    <text class="b" x="207.75" y="461.35" font-size="8.2">#1 IPA</text>
+    <text class="b" x="207.75" y="497.55" font-size="8.2">#3 TDM</text>
+    <text class="b" x="238" y="468.47" font-size="5.2">#3</text>
+    <text class="b" x="238" y="476.07" font-size="5.2">TDM</text>
+    <text class="b" x="238" y="483.67" font-size="5.2">Comp</text>
+    <text class="m" x="270.75" y="469.63" font-size="6.2">변전실</text>
+    <text class="b" x="326.25" y="465.16" font-size="8.5">조정실</text>
+    <text class="b" x="326" y="504.46" font-size="8.5">NOM / NDM</text>
+    <text class="b" x="420.25" y="486.25" font-size="8.2">NaSH</text>
+    <text class="b" x="479" y="490.85" font-size="8.2">TDM</text>
+    <text class="b" x="707" y="319.9" font-size="6.4">폐수처리장</text>
+    <text class="b" x="657.5" y="362.84" font-size="9">NP / TDM</text>
+    <text class="b" x="657.5" y="374.84" font-size="9">Tank</text>
+    <text class="m" x="597.2" y="355.63" font-size="4.8">TK-3809</text>
+    <text class="m" x="723.7" y="355.63" font-size="4.8">TK-3808</text>
+    <text class="m" x="659.5" y="415.13" font-size="4.8">TK-3801</text>
+    <text class="m" x="589.3" y="415.48" font-size="4.4">TK-3811</text>
+    <text class="m" x="726.2" y="416.18" font-size="4.4">TK-3810</text>
+    <text class="m" x="599.7" y="469.03" font-size="4.8">TK-3803</text>
+    <text class="m" x="723.8" y="469.53" font-size="4.8">TK-3802</text>
+    <text class="m h" x="549.5" y="516.26" font-size="4.6" style="text-anchor:start">TK-6501</text>
+    <text class="b" x="113" y="588.37" font-size="8.8">IPA Tank</text>
+    <text class="b" x="97" y="664.25" font-size="8.2">NOM/NDM Tank</text>
+    <text class="b" x="332.5" y="578.36" font-size="11">MCC</text>
+    <text class="b" x="353.25" y="639.16" font-size="8.5">LP-1</text>
+    <text class="b" x="456.25" y="638.96" font-size="8.5">LP-1</text>
+    <text class="b" x="450" y="683.66" font-size="8.5">LP-1</text>
+    <text class="b" x="563.4" y="573.55" font-size="7.5">옥외</text>
+    <text class="b" x="563.4" y="584.05" font-size="7.5">저장소</text>
+    <text class="b" x="621.5" y="582.74" font-size="9">MCC</text>
+    <text class="b" x="685.25" y="592.14" font-size="9">DP-1</text>
+    <text class="b" x="755.25" y="593.14" font-size="9">DP-1</text>
+    <text class="b" x="663.75" y="640.34" font-size="9">DP-2</text>
+    <text class="b" x="730.5" y="636.14" font-size="9">DP-2</text>
+    <text class="b" x="683.5" y="667.64" font-size="7.6">SCR</text>
+    <text class="b" x="789.25" y="663.21" font-size="8.5">LPG</text>
+    <text class="b" x="789.25" y="674.71" font-size="8.5">Tank</text>
+    <text class="m" x="832.25" y="595.86" font-size="4.6">산업</text>
+    <text class="m" x="832.25" y="603.26" font-size="4.6">폐기물</text>
+    <text class="m" x="832.25" y="610.66" font-size="4.6">보관장</text>
+    <text class="b" x="577.4" y="645.33" font-size="6.2">Scrubber</text>
+    <text class="b" x="577.4" y="653.53" font-size="6.2">etc</text>
+    <text class="b" x="579.4" y="680.77" font-size="8.8">C/T</text>
+  </g>
+</svg>

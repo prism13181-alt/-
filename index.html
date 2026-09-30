@@ -4,1161 +4,1613 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light" />
-  <meta name="description" content="공정별 응급처치 요령, 물질별 보호구 착용기준, 보호구 종류 및 세안기 위치 안내" />
-  <meta name="theme-color" content="#8b7ad8" />
-  <title>공정별 안전보건 안내</title>
+  <meta name="theme-color" content="#4f35ba" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="공정별 유해화학물질 취급 정보 (MSDS 요약, 응급처치 방법, 보호구 착용 기준, 비상대피로 위치)" />
+  <title>유해화학물질 정보제공</title>
+
+  <!-- 글꼴 (불러오지 못하면 기기 기본 글꼴로 표시) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 
   <!--
-    ============================================================
-    이미지 파일 배치 안내 (index.html 과 같은 폴더에 두세요)
-    ------------------------------------------------------------
-    공정 번호: 1 IPA UNIT / 2 Li2S Unit / 3 NaSH Unit /
-               4 #3 TDM Unit / 5 NOM/NDM UNIT / 6 #1,2 TDM Unit
+  ======================================================================
+   이미지 파일 배치 안내  (기본: index.html 과 같은 폴더 / 스크립트의 IMAGE_BASE 로 변경)
+  ----------------------------------------------------------------------
+   ■ 공정 코드
+      tdm12 = #1, 2 TDM Unit    tdm3 = #3 TDM Unit    nomndm = NOM/NDM Unit
+      nash  = NaSH Unit         li2s = Li2S Unit      lp1    = LP-1 Unit
 
-    응급처치 요령              a-1.png ~ a-6.png
-    물질별 취급 보호구 착용기준  b-1.png ~ b-6.png
-    보호구의 종류 및 정의       c-1.png ~ c-6.png
-    보안경 보관함·세안기 위치   d-1.png ~ d-6.png
+   ■ 공정별 항목 (공정 코드마다 1장씩)
+      응급처치 방법                 {공정코드}-firstaid.png   예) tdm12-firstaid.png
+      취급 물질별 보호구 착용 기준    {공정코드}-ppe.png        예) tdm12-ppe.png
+      비상대피로 위치               {공정코드}-evac.png       예) tdm12-evac.png
 
-    로고: logo.png (없으면 글자 로고로 자동 대체)
-    이미지를 별도 폴더에 둘 경우 아래 스크립트의 IMAGE_BASE 값만 바꾸세요.
-    ============================================================
+   ■ MSDS 요약 정보 (물질별 1장 — 같은 물질은 여러 공정이 같은 파일을 사용)
+      msds-h2s.png    msds-pt.png     msds-nom.png    msds-1-octene.png
+      msds-naoh.png   msds-nash.png   msds-lioh.png
+
+   ■ 공통 항목
+      보호구 종류                    common-ppe-types.png
+      세안기, 보안경 보관함 위치       common-eyewash.png
+      공정 내 비상대피로 위치         evac-map.svg  (공장 배치도 — 확대해도 선명한 벡터 그림)
+                                     + 원형 버튼별 사진 evac-point-1.png, evac-point-2.png …
+                                     버튼 위치·이름·사진은 스크립트의 EVAC_MAP 에서 설정
+
+   ■ 로고   logo.png  (없으면 글자 로고로 자동 대체)
+
+   ■ QR 바로가기 주소 — 공정 출입구 QR마다 해당 공정 화면이 바로 열림
+      https://(사이트 주소)/index.html?u=tdm12      ← 끝의 공정 코드만 바꿔서 사용
+      ?u= 없이 접속하면 첫 화면(공정 선택)부터 시작
+
+   ■ 배포 전 확인
+      REVIEW_BYPASS = false  (위치 확인 화면 오른쪽 위의 검토용 숨은 버튼 제거)
+  ======================================================================
   -->
 
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    *, *::before, *::after { box-sizing: border-box; }
+    * { -webkit-tap-highlight-color: transparent; }
 
-    :root{
-      --bg:#faf8fe;
-      --text:#2b2440;
-      --muted:#6f6885;
-      --line:#ebe6f5;
+    /* ================= 색상 체계 =================
+       보라  : 공정별 정보 (선택한 공정에만 해당)
+       주황  : 공장 공통 정보 (모든 공정에 동일 적용)
+       녹색  : 비상대피 표시 (안전보건표지의 '안내' 색 — 비상구·피난 표지와 같은 의미)
+    ============================================== */
+    :root {
+      --ink: #1b1630;
+      --ink-2: #433d58;
+      --muted: #6c6684;
+      --faint: #a7a1bb;
+      --line: #e8e4f1;
+      --bg: #f4f2f9;
 
-      /* 연보라 */
-      --purple:#8b7ad8;
-      --purple-dark:#6250bd;
-      --purple-soft:#f2eefc;
-      --purple-border:#d9cff5;
+      --p-50: #f5f2ff;  --p-100: #ebe5ff; --p-200: #d8cdfb; --p-400: #9b85ee;
+      --p-500: #7b61e4; --p-600: #6548d6; --p-700: #5236bd; --p-800: #40298f;
 
-      /* 연주황 */
-      --orange:#f5a05a;
-      --orange-dark:#d9762a;
-      --orange-soft:#fff3e8;
-      --orange-border:#f7d6b3;
+      --o-50: #fff5eb;  --o-100: #ffe9d4; --o-200: #fbd0a6; --o-400: #f7a24f;
+      --o-500: #f28a2e; --o-600: #e2761b; --o-700: #a64f0d; --o-900: #2d1603;
 
-      --shadow:0 16px 40px rgba(58,44,96,0.08);
-      --shadow-soft:0 10px 24px rgba(58,44,96,0.06);
-      --shadow-purple:0 14px 30px rgba(139,122,216,0.22);
-      --shadow-orange:0 14px 30px rgba(245,160,90,0.24);
+      --g-50: #eaf8f1;  --g-100: #c9ecdb; --g-500: #15a06b; --g-600: #0b7f53; --g-800: #08553a;
+
+      --sh-1: 0 1px 2px rgba(27,22,48,.05), 0 6px 18px rgba(27,22,48,.06);
+      --sh-2: 0 14px 34px rgba(64,41,143,.16);
+      --ease: cubic-bezier(.2,.7,.2,1);
+      --safe-t: env(safe-area-inset-top, 0px);
+      --safe-b: env(safe-area-inset-bottom, 0px);
+
+      --grad-p:
+        radial-gradient(85% 90% at 108% -12%, rgba(247,162,79,.72) 0%, rgba(247,162,79,0) 62%),
+        linear-gradient(158deg, #452ca9 0%, #5b3fcc 52%, #7157dd 100%);
+      --grad-o:
+        radial-gradient(70% 80% at 110% -15%, rgba(255,206,140,.45) 0%, rgba(255,206,140,0) 60%),
+        linear-gradient(158deg, #f47c1c 0%, #ee6f15 52%, #e8650f 100%);
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-                   "Noto Sans KR", "Malgun Gothic", "맑은 고딕", sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(245,160,90,0.10), transparent 30%),
-        radial-gradient(circle at top left, rgba(139,122,216,0.12), transparent 32%),
-        linear-gradient(180deg, #fdfbff 0%, var(--bg) 100%);
-      background-attachment: fixed;
-      color: var(--text);
+    body {
+      margin: 0; min-height: 100vh;
+      background: var(--bg); color: var(--ink);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+                   "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "맑은 고딕", sans-serif;
+      font-size: 16px; line-height: 1.5;
       -webkit-text-size-adjust: 100%;
+      word-break: keep-all; overflow-wrap: break-word;
     }
-
-    body { min-height: 100vh; }
     body.no-scroll { overflow: hidden; }
+    button { font: inherit; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--p-500); outline-offset: 2px; border-radius: 10px; }
+    .ic { display: block; flex: none; }
+    button[data-nav] { margin: 0; text-align: left; cursor: pointer; }
+    .unit-row, .c-tile, .sub-btn { width: 100%; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-    :focus-visible { outline: 3px solid var(--purple-dark); outline-offset: 3px; border-radius: 8px; }
-
-    .page {
-      width: 100%;
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 14px 12px calc(40px + env(safe-area-inset-bottom));
+    .spinner {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 4.5px solid var(--p-100); border-top-color: var(--p-500);
+      animation: spin .9s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ================= GPS 접근 게이트 ================= */
+    /* 화면 전환 애니메이션 */
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+    @keyframes fade { from { opacity: 0; } }
+    .enter .band, .enter .hero { animation: fade .28s ease backwards; }
+    .enter .rise { animation: rise .42s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 40ms + 60ms); }
+
+    /* ================= 위치 확인 게이트 ================= */
     .gate {
       position: fixed; inset: 0; z-index: 3000;
       display: flex; align-items: center; justify-content: center;
-      padding: 22px;
-      background: linear-gradient(160deg, #5b48b0 0%, #3c2f78 60%, #7a4a24 100%);
+      padding: 24px 20px calc(24px + var(--safe-b));
+      background: var(--grad-p);
     }
-    .gate.hidden { display: none; }
-
-    /* 검토용 우회 버튼 (배경과 거의 같은 색이라 눈에 띄지 않음) */
     .gate-bypass {
-      position: absolute; top: 14px; right: 14px;
-      width: 28px; height: 28px; padding: 0;
-      border: none; border-radius: 7px;
-      background: rgba(255,255,255,0.05);
-      cursor: pointer;
+      position: absolute; top: calc(12px + var(--safe-t)); right: 12px;
+      width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px;
+      background: rgba(255,255,255,.035); cursor: pointer;
     }
-
     .gate-card {
-      width: 100%; max-width: 440px;
-      background: #fff; border-radius: 26px;
-      padding: 32px 24px 26px; text-align: center;
-      box-shadow: 0 30px 70px rgba(0,0,0,0.35);
+      width: 100%; max-width: 400px; text-align: center;
+      background: #fff; border-radius: 28px; padding: 34px 22px 24px;
+      box-shadow: 0 30px 70px rgba(20,10,60,.35);
     }
+    .gate .spinner { margin: 0 auto 18px; }
     .gate-icon {
-      width: 72px; height: 72px; margin: 0 auto 16px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 34px; background: var(--purple-soft);
+      width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--p-50); color: var(--p-600);
     }
-    .gate-icon.deny { background: #fdeceb; }
-    .gate-icon.wait { background: var(--orange-soft); }
-    .gate-title { margin: 0 0 12px; font-size: 23px; font-weight: 800; letter-spacing: -0.03em; }
-    .gate-desc { margin: 0 0 20px; font-size: 16px; line-height: 1.7; color: #55506b; word-break: keep-all; }
+    .gate-icon.deny { background: #fdecec; color: #c62828; }
+    .gate-icon.wait { background: var(--o-50); color: var(--o-700); }
+    .gate-title { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -.03em; }
+    .gate-desc { margin: 10px 0 0; font-size: 15.5px; line-height: 1.7; color: var(--ink-2); }
+    .gate-desc b { color: var(--ink); }
     .gate-btn {
-      width: 100%; min-height: 58px; border: none; border-radius: 17px;
-      font-family: inherit; font-size: 18px; font-weight: 800; color: #fff; cursor: pointer;
-      background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple) 100%);
-      box-shadow: var(--shadow-purple);
+      width: 100%; min-height: 56px; margin-top: 22px; border: 0; border-radius: 16px; cursor: pointer;
+      background: var(--p-600); color: #fff; font-size: 17px; font-weight: 800;
+      box-shadow: 0 10px 24px rgba(101,72,214,.3);
     }
-    .gate-spinner {
-      width: 46px; height: 46px; margin: 0 auto 18px;
-      border: 5px solid #ece7f8; border-top-color: var(--purple);
-      border-radius: 50%; animation: spin 0.9s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .gate-sub { margin-top: 14px; font-size: 13px; line-height: 1.7; color: #96909f; }
 
     .app { display: none; }
     body.access-granted .app { display: block; }
 
-    /* ================= 헤더 ================= */
-    .hero {
+    .wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px calc(40px + var(--safe-b)); }
+
+    /* ================= 상단 색띠 (첫 화면 / 각 화면) ================= */
+    .hero, .band {
       position: relative; overflow: hidden;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #7361cd 0%, #9b86e0 48%, #f3a463 100%);
-      box-shadow: 0 16px 34px rgba(96,74,168,0.22);
-      padding: 14px 16px 16px;
+      border-radius: 0 0 30px 30px;
     }
-    .hero::before {
-      content: ""; position: absolute; border-radius: 999px;
-      width: 220px; height: 220px; right: -50px; top: -80px;
-      background: rgba(255,255,255,0.12); pointer-events: none;
+    .hero::after, .band::after {
+      content: ""; position: absolute; right: -80px; bottom: -120px;
+      width: 250px; height: 250px; border-radius: 50%;
+      border: 34px solid rgba(255,255,255,.07); pointer-events: none;
     }
-    .hero-logo-wrap {
-      position: relative; z-index: 3;
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 5px 10px; margin-bottom: 9px;
-      background: rgba(255,255,255,0.97);
-      border-radius: 11px; box-shadow: 0 6px 16px rgba(40,26,80,0.14);
-    }
-    .hero-logo { display: block; height: 20px; width: auto; object-fit: contain; }
-    .hero-logo-fallback { display: none; font-size: 13px; font-weight: 800; color: var(--purple-dark); white-space: nowrap; }
-    .hero-logo-wrap.img-failed .hero-logo { display: none; }
-    .hero-logo-wrap.img-failed .hero-logo-fallback { display: block; }
+    .band-in { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 16px; }
 
-    .hero-inner { position: relative; z-index: 2; text-align: center; }
-    .hero-kicker {
-      margin: 2px 0 6px; font-size: 11px; line-height: 1;
-      letter-spacing: 0.15em; font-weight: 700; color: rgba(255,255,255,0.92);
+    .hero { color: #fff; background: var(--grad-p); padding: calc(18px + var(--safe-t)) 0 30px; }
+    .logo-chip {
+      display: inline-flex; align-items: center; height: 32px; padding: 0 11px;
+      border-radius: 10px; background: #fff; box-shadow: 0 6px 16px rgba(20,10,60,.18);
     }
-    .hero-title { margin: 0; font-size: 26px; line-height: 1.2; letter-spacing: -0.04em; font-weight: 800; color: #fff; }
-    .hero-desc { margin: 9px 0 0; font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,0.95); word-break: keep-all; }
+    .logo-chip img { display: block; height: 19px; width: auto; }
+    .logo-chip span { display: none; font-size: 13px; font-weight: 800; color: var(--p-700); white-space: nowrap; }
+    .logo-chip.fallback img { display: none; }
+    .logo-chip.fallback span { display: block; }
+    /* 첫 화면 제목: 한 줄 + 주황 밑줄, 배경에 분자 구조(벤젠 고리) 선 그림 */
+    .hero::after { display: none; }
+    .hero-mol {
+      position: absolute; right: -34px; top: 50%; transform: translateY(-50%);
+      width: 230px; height: 230px; opacity: .2; pointer-events: none;
+    }
+    .hero-title {
+      margin: 22px 0 0; white-space: nowrap;
+      font-size: clamp(25px, 8.1vw, 42px); line-height: 1.2; font-weight: 800; letter-spacing: -.045em;
+    }
+    .hero-title::after {
+      content: ""; display: block; width: 2.2em; height: 4px; margin-top: 12px;
+      border-radius: 2px; background: #f7963c;
+    }
+    .hero-title:focus, .band-title:focus { outline: none; }
 
-    .offline-banner {
-      display: none; margin: 12px 0 0; padding: 11px 14px;
-      border-radius: 14px; background: var(--orange-soft); border: 1px solid var(--orange-border);
-      color: #8a5312; font-size: 13.5px; font-weight: 700; text-align: center; word-break: keep-all;
+    .band { padding: calc(10px + var(--safe-t)) 0 26px; }
+    .band-p { color: #fff; background: var(--grad-p); }
+    .band-o { color: #fff; background: var(--grad-o); }
+    .band-o .band-title { text-shadow: 0 1px 2px rgba(120,40,0,.28); }
+    .band-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 2px;
+      min-height: 42px; max-width: 80%; padding: 0 15px 0 8px;
+      border-radius: 999px; cursor: pointer;
+      font-size: 15px; font-weight: 800; letter-spacing: -.02em;
+      background: rgba(255,255,255,.17); border: 1px solid rgba(255,255,255,.28); color: inherit;
     }
-    body.offline .offline-banner { display: block; }
+    .pill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pill-home { width: 42px; padding: 0; justify-content: center; }
+    .band-o .pill { background: rgba(0,0,0,.16); border-color: rgba(255,255,255,.3); }
+    .pill:active { transform: scale(.96); }
+    .band-title {
+      margin: 20px 0 0; font-size: 28px; line-height: 1.22; font-weight: 800; letter-spacing: -.04em;
+    }
+    .band-title.xl { margin-top: 18px; font-size: clamp(30px, 9.4vw, 46px); line-height: 1.1; letter-spacing: -.045em; }
+    .band-title .unit-sfx { color: inherit; opacity: .82; }
+    .band-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .band-chip {
+      padding: 4px 11px; border-radius: 9px; font-size: 14.5px; font-weight: 800;
+      background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3);
+    }
 
-    /* ================= 단계 표시줄 ================= */
-    .stage-bar {
-      margin: 12px 0; padding: 5px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid #ece7f6;
-      box-shadow: var(--shadow-soft);
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px;
-      list-style: none;
+    /* 스크롤 시 나타나는 상단 막대 */
+    .appbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transform: translateY(-105%); visibility: hidden;
+      transition: transform .24s var(--ease), visibility 0s .24s;
+      box-shadow: 0 6px 20px rgba(27,22,48,.16);
     }
-    .stage-bar > li { display: flex; }
-    .stage-item {
-      width: 100%; min-height: 46px; border: none; border-radius: 999px;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      padding: 6px 6px; background: transparent; color: #8c85a0;
-      font-family: inherit; font-weight: 800; cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
+    .appbar.show { transform: none; visibility: visible; transition: transform .24s var(--ease), visibility 0s; }
+    .appbar-p { background: #4f35ba; color: #fff; }
+    .appbar-o { background: #e8650f; color: #fff; }
+    .appbar-in {
+      max-width: 752px; margin: 0 auto;
+      display: flex; align-items: center; gap: 2px;
+      padding: calc(4px + var(--safe-t)) 12px 4px 4px;
     }
-    .stage-item.disabled { cursor: not-allowed; opacity: 0.45; }
-    .stage-item.active { background: var(--purple-soft); color: var(--purple-dark); }
-    .stage-item.done { color: var(--purple-dark); }
-    .stage-num {
-      width: 23px; height: 23px; border-radius: 50%;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 12.5px; font-weight: 800; background: #e6e1f2; color: #7d7692; flex: 0 0 auto;
+    .ab-back {
+      width: 48px; height: 48px; flex: none; border: 0; border-radius: 14px; cursor: pointer;
+      display: grid; place-items: center; background: none; color: inherit;
     }
-    .stage-item.active .stage-num, .stage-item.done .stage-num {
-      background: var(--purple); color: #fff; box-shadow: 0 6px 14px rgba(139,122,216,0.35);
+    .ab-back:active { background: rgba(255,255,255,.16); }
+    .ab-title {
+      flex: 1; min-width: 0; font-size: 17px; font-weight: 800; letter-spacing: -.02em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .stage-label { font-size: 13.5px; letter-spacing: -0.02em; }
 
-    /* ================= 패널 ================= */
-    .panel {
-      background: #fff; border: 1px solid #efeaf8;
-      border-radius: 22px; box-shadow: var(--shadow);
-      padding: 18px 12px 16px;
+    /* ================= 공정 선택 (첫 화면) ================= */
+    .unit-list { display: grid; gap: 8px; }
+    .unit-row {
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; gap: 8px;
+      min-height: 60px; padding: 10px 10px 10px 18px;
+      background: #fff; border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: var(--sh-1);
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
     }
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    .section-title-wrap { display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 6px; }
-    .section-no {
-      width: 33px; height: 33px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--purple); color: #fff; font-size: 17px; font-weight: 800;
-      box-shadow: 0 6px 14px rgba(139,122,216,0.35); flex: 0 0 auto;
+    .unit-row::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+      background: linear-gradient(180deg, var(--p-500), var(--p-700));
     }
-    .section-title { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -0.045em; }
-    .section-title:focus { outline: none; }
-    .section-desc {
-      margin: 10px auto 15px; max-width: 640px; text-align: center;
-      font-size: 14.5px; line-height: 1.65; color: var(--muted); word-break: keep-all;
+    .unit-row:active { transform: scale(.985); border-color: var(--p-200); }
+    @media (hover: hover) { .unit-row:hover { border-color: var(--p-200); box-shadow: var(--sh-2); } }
+    .ur-main {
+      flex: 1; min-width: 0;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      column-gap: 10px; row-gap: 5px;
     }
-    .section-desc b { color: var(--purple-dark); font-weight: 800; }
+    .ur-name {
+      font-size: clamp(19px, 5.8vw, 24px); font-weight: 800;
+      letter-spacing: -.035em; line-height: 1.2; color: var(--ink); white-space: nowrap;
+    }
+    .unit-sfx { font-weight: 700; color: #6a6484; }
+    .ur-chips { display: flex; flex-wrap: wrap; gap: 3px; }
+    .unit-list.stacked .ur-main { flex-direction: column; align-items: flex-start; row-gap: 3px; }
+    .chip {
+      display: inline-block; padding: 1px 5px; border-radius: 6px;
+      font-size: 11.5px; font-weight: 700; line-height: 1.6; letter-spacing: -.01em;
+      background: #f3f1f8; color: var(--ink-2); border: 1px solid #e6e2ef;
+    }
+    .ur-go { flex: none; color: var(--p-400); }
 
-    /* ================= 1단계: 공정 선택 ================= */
-    .unit-grid { display: grid; gap: 10px; }
+    /* ================= 공통 항목 (주황 타일) ================= */
+    .common-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line);
+    }
+    .c-tile {
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 128px; padding: 14px 11px 14px 12px;
+      border-radius: 20px; background: var(--o-50); border: 1.5px solid var(--o-200);
+      color: var(--o-900);
+      transition: transform .14s ease;
+    }
+    .c-tile:active { transform: scale(.965); }
+    .c-ico {
+      width: 48px; height: 48px; border-radius: 15px; flex: none;
+      display: grid; place-items: center; color: #fff;
+      background: linear-gradient(140deg, #f9a651, #e8761a);
+      box-shadow: 0 6px 14px rgba(232,118,26,.3);
+    }
+    .c-title { font-size: 14.5px; font-weight: 800; line-height: 1.32; letter-spacing: -.035em; }
 
-    .unit-btn {
+    /* ================= 공정 화면: 공정별 항목 (보라) ================= */
+    .items { display: grid; gap: 10px; }
+    .item {
+      background: #fff; border: 1px solid var(--p-100); border-radius: 22px;
+      box-shadow: var(--sh-1); overflow: hidden;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .item.open { border-color: var(--p-200); box-shadow: var(--sh-2); }
+    .item-btn {
+      display: flex; align-items: center; gap: 14px; width: 100%;
+      min-height: 76px; padding: 14px 14px 14px 14px;
+      border: 0; background: none; text-align: left; cursor: pointer;
+    }
+    .item-btn:active .item-ico { transform: scale(.94); }
+    .item-ico {
+      width: 52px; height: 52px; border-radius: 16px; flex: none;
+      display: grid; place-items: center; color: #fff;
+      background: linear-gradient(140deg, var(--p-700), var(--p-500));
+      box-shadow: 0 8px 16px rgba(101,72,214,.28);
+      transition: transform .14s ease;
+    }
+    .item-title { flex: 1; min-width: 0; font-size: 18.5px; font-weight: 800; letter-spacing: -.035em; line-height: 1.3; }
+    .chev { flex: none; color: var(--faint); display: grid; place-items: center; }
+    .item .chev-d .ic { transition: transform .28s var(--ease); }
+    .item.open .chev-d .ic { transform: rotate(180deg); color: var(--p-600); }
+
+    .sub-wrap {
+      display: grid; grid-template-rows: 0fr; visibility: hidden;
+      transition: grid-template-rows .3s var(--ease), visibility 0s .3s;
+    }
+    .item.open .sub-wrap { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .3s var(--ease), visibility 0s; }
+    .sub-inner { min-height: 0; overflow: hidden; }
+    .sub-grid { display: grid; gap: 8px; padding: 2px 12px 12px; }
+    .sub-btn {
       display: flex; align-items: center; gap: 12px;
-      width: 100%; min-height: 68px; border: none; border-radius: 18px;
-      padding: 13px 15px; text-align: left; cursor: pointer;
-      font-family: inherit; color: #fff;
-      box-shadow: 0 10px 22px rgba(58,44,96,0.13);
-      transition: transform 0.14s ease, filter 0.14s ease;
+      min-height: 60px; padding: 9px 10px;
+      border-radius: 16px; background: var(--p-50); border: 1px solid var(--p-100);
+      transition: transform .12s ease;
     }
-    .unit-btn:active { transform: scale(0.985); filter: brightness(0.98); }
-    .unit-btn.p { background: linear-gradient(135deg, #6f5cc9 0%, #9a86e2 100%); }
-    .unit-btn.o { background: linear-gradient(135deg, #e58236 0%, #f7ae70 100%); }
-
-    .unit-num {
-      width: 34px; height: 34px; flex: 0 0 auto; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.24); color: #fff;
-      font-size: 16px; font-weight: 800;
+    .sub-btn:active { transform: scale(.98); }
+    .sub-code {
+      flex: none; min-width: 74px; padding: 7px 8px; border-radius: 11px; text-align: center;
+      background: #fff; border: 1px solid var(--p-200);
+      color: var(--p-700); font-size: 15px; font-weight: 800; letter-spacing: -.02em;
     }
-    .unit-name { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; word-break: keep-all; }
-    .unit-arrow { margin-left: auto; font-size: 20px; font-weight: 800; opacity: 0.85; flex: 0 0 auto; }
+    .sub-label { flex: 1; min-width: 0; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
 
-    .notice {
-      margin-top: 14px; padding: 13px 14px; border-radius: 15px;
-      background: linear-gradient(180deg, #f6f2fe 0%, #fbf9ff 100%);
-      border: 1px solid var(--purple-border);
-      font-size: 13.5px; line-height: 1.7; color: #4b4266; word-break: keep-all;
+    /* ================= 자료 화면 ================= */
+    .tabs {
+      display: flex; gap: 8px; overflow-x: auto;
+      margin: 0 -16px 2px; padding: 2px 16px 18px;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
     }
-
-    /* ================= 2단계: 항목 선택 ================= */
-    .unit-chip {
-      display: flex; align-items: center; gap: 9px;
-      margin: 0 0 14px; padding: 11px 13px;
-      border-radius: 15px; background: var(--purple-soft);
-      border: 1px solid var(--purple-border);
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: none; display: inline-flex; align-items: center; gap: 7px;
+      min-height: 48px; padding: 0 17px; border-radius: 999px;
+      border: 1.5px solid var(--p-200); background: #fff;
+      color: var(--p-700); font-size: 15.5px; font-weight: 800; white-space: nowrap;
+      transition: background .15s ease, color .15s ease;
     }
-    .unit-chip-label { font-size: 12px; font-weight: 800; color: #8b83a6; letter-spacing: 0.02em; flex: 0 0 auto; }
-    .unit-chip-name { font-size: 17px; font-weight: 800; color: var(--purple-dark); letter-spacing: -0.03em; word-break: keep-all; }
-    .unit-chip-change {
-      margin-left: auto; flex: 0 0 auto;
-      border: 1.5px solid var(--purple-border); background: #fff;
-      color: var(--purple-dark); font-family: inherit; font-size: 12.5px; font-weight: 800;
-      padding: 8px 11px; border-radius: 999px; cursor: pointer;
+    .tab small { font-size: 13px; font-weight: 700; color: var(--muted); }
+    .tab[aria-current="page"] {
+      background: var(--p-600); border-color: var(--p-600); color: #fff;
+      box-shadow: 0 8px 18px rgba(101,72,214,.3);
     }
+    .tab[aria-current="page"] small { color: rgba(255,255,255,.85); }
 
-    .cat-list { display: grid; gap: 10px; }
-    .cat-item { border-radius: 18px; overflow: hidden; border: 1.5px solid transparent; }
-    .cat-item.p { border-color: var(--purple-border); background: #fbf9ff; }
-    .cat-item.o { border-color: var(--orange-border); background: #fffaf4; }
-
-    .cat-btn {
-      display: flex; align-items: center; gap: 11px;
-      width: 100%; min-height: 66px; border: none;
-      padding: 13px 14px; text-align: left; cursor: pointer;
-      font-family: inherit; background: transparent;
-    }
-    .cat-icon {
-      width: 40px; height: 40px; flex: 0 0 auto; border-radius: 13px;
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
-    }
-    .cat-item.p .cat-icon { background: linear-gradient(135deg, #6f5cc9 0%, #9a86e2 100%); }
-    .cat-item.o .cat-icon { background: linear-gradient(135deg, #e58236 0%, #f7ae70 100%); }
-    .cat-title { font-size: 17.5px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.3; word-break: keep-all; }
-    .cat-item.p .cat-title { color: var(--purple-dark); }
-    .cat-item.o .cat-title { color: #b45f14; }
-    .cat-sub { display: block; margin-top: 3px; font-size: 12.5px; font-weight: 700; color: #8b849e; }
-    .cat-chev { margin-left: auto; flex: 0 0 auto; font-size: 15px; font-weight: 800; color: #a49dba; transition: transform 0.2s ease; }
-    .cat-item.open .cat-chev { transform: rotate(180deg); }
-
-    .cat-body { padding: 0 10px 12px; }
-
-    /* 이미지 블록 */
+    .imgbox { margin: 0; }
     .img-frame {
-      border-radius: 14px; overflow: hidden; background: #fff;
-      border: 1px solid var(--line);
+      position: relative; overflow: hidden;
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--sh-1);
     }
-    .img-thumb { display: block; width: 100%; height: auto; cursor: zoom-in; }
-
-    .img-loading, .img-error {
+    .img-hit { position: relative; display: block; width: 100%; padding: 0; border: 0; background: #fff; cursor: zoom-in; }
+    .img-hit img { display: block; width: 100%; height: auto; }
+    .img-zoom {
+      position: absolute; right: 12px; bottom: 12px;
+      width: 46px; height: 46px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(27,22,48,.72); color: #fff;
+      box-shadow: 0 6px 16px rgba(0,0,0,.2);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .img-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 10px; min-height: 150px; padding: 24px 16px; text-align: center;
+      gap: 10px; min-height: 240px; padding: 28px 20px; text-align: center;
     }
-    .img-loading { background: #faf8fe; color: #8c85a0; }
-    .img-spinner {
-      width: 32px; height: 32px; border: 4px solid #e8e2f5;
-      border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite;
+    .img-loading .spinner { width: 34px; height: 34px; border-width: 4px; }
+    .img-error { background: #fbfaff; }
+    .err-ico { color: var(--faint); }
+    .err-text { margin: 0; font-size: 15px; font-weight: 800; color: var(--ink-2); }
+    .err-file {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px;
+      color: var(--muted); background: #f1eff6; padding: 3px 8px; border-radius: 6px; word-break: break-all;
     }
-    .img-loading span { font-size: 13.5px; font-weight: 700; }
-    .img-error { background: var(--orange-soft); color: #8a5312; }
-    .img-error .e-icon { font-size: 26px; }
-    .img-error .e-text { font-size: 13.5px; font-weight: 700; line-height: 1.6; word-break: keep-all; }
-    .img-error .e-file { font-size: 12px; color: #a97c46; font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
-    .img-error .e-retry {
-      margin-top: 4px; border: 1.5px solid var(--orange-border); background: #fff;
-      color: #b45f14; font-family: inherit; font-size: 13px; font-weight: 800;
-      padding: 9px 16px; border-radius: 999px; cursor: pointer;
+    .err-retry {
+      min-height: 44px; padding: 0 20px; border-radius: 999px; cursor: pointer;
+      border: 1.5px solid var(--line); background: #fff; font-size: 14.5px; font-weight: 800;
     }
 
-    .img-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
-    .img-tool {
-      min-height: 46px; border-radius: 13px; cursor: pointer;
-      font-family: inherit; font-size: 13.5px; font-weight: 800; letter-spacing: -0.02em;
-      background: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      text-decoration: none; word-break: keep-all; padding: 6px 8px; line-height: 1.3;
+    /* ================= 공정 내 비상대피로 지도 (녹색 핀) ================= */
+    .evac {
+      position: relative;
+      background: #fff; border: 1px solid var(--line); border-radius: 22px;
+      overflow: hidden; box-shadow: var(--sh-1);
     }
-    .cat-item.p .img-tool { border: 1.5px solid var(--purple-border); color: var(--purple-dark); }
-    .cat-item.o .img-tool { border: 1.5px solid var(--orange-border); color: #b45f14; }
-
-    .nav-row { display: grid; grid-template-columns: 1fr; gap: 9px; margin-top: 14px; }
-    .nav-btn {
-      min-height: 54px; border-radius: 16px; cursor: pointer;
-      font-family: inherit; font-size: 16px; font-weight: 800; letter-spacing: -0.02em;
-      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-      background: #fff; color: var(--text); border: 2px solid #e3ddf1;
-      box-shadow: 0 6px 16px rgba(58,44,96,0.05);
+    .evac-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .evac-canvas { position: relative; min-width: 100%; }
+    .evac-open { display: block; width: 100%; margin: 0; padding: 0; border: 0; background: #f3f1f8; cursor: zoom-in; }
+    .evac-open img { display: block; width: 100%; height: auto; -webkit-user-drag: none; user-select: none; }
+    .evac-bar {
+      display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
+      min-height: 50px; margin: 0; padding: 0 14px; border: 0; border-top: 1px solid var(--line);
+      background: #fff; color: var(--g-800); font-size: 15.5px; font-weight: 800; letter-spacing: -.02em; cursor: pointer;
+    }
+    .evac-bar:active { background: var(--g-50); }
+    .evac-note { margin: 12px 4px 0; font-size: 14.5px; font-weight: 700; line-height: 1.55; color: var(--ink-2); }
+    .evac-error {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; min-height: 220px; padding: 28px 20px; text-align: center; background: #fbfaff;
+    }
+    .pin {
+      --pin: 44px;
+      position: absolute; z-index: 1;
+      width: var(--pin); height: var(--pin); margin: calc(var(--pin) / -2) 0 0 calc(var(--pin) / -2); padding: 0;
+      display: grid; place-items: center;
+      border: 3px solid #fff; border-radius: 50%; cursor: pointer;
+      background: var(--g-600); color: #fff; font-size: calc(var(--pin) * .4); font-weight: 800; line-height: 1;
+      box-shadow: 0 4px 12px rgba(8,85,58,.35);
+    }
+    .evac .pin { --pin: 38px; }
+    @media (max-width: 520px) { .evac .pin { --pin: 30px; border-width: 2.5px; } }
+    .pin::before {
+      content: ""; position: absolute; inset: -7px; border-radius: 50%;
+      border: 2px solid var(--g-500); pointer-events: none;
+      animation: ring 2s ease-out infinite;
+    }
+    .pin:active { transform: scale(.92); }
+    @keyframes ring { 0% { transform: scale(.75); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
+    .evac-empty {
+      aspect-ratio: 4 / 3;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 24px; text-align: center;
+      background-color: #fbfdfc;
+      background-image:
+        linear-gradient(#dcefe5 1px, transparent 1px),
+        linear-gradient(90deg, #dcefe5 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .evac-empty-ico {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: grid; place-items: center;
+      background: #fff; color: var(--g-600); border: 1.5px dashed var(--g-500);
+    }
+    .evac-empty-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--g-800); }
+    .legend { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+    .legend-btn {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      min-height: 58px; padding: 8px 12px 8px 12px; cursor: pointer; text-align: left;
+      border: 1px solid var(--line); border-radius: 16px; background: #fff;
+      font-size: 16px; font-weight: 800; letter-spacing: -.02em;
+    }
+    .legend-btn .t { flex: 1; min-width: 0; }
+    .pin-mini {
+      flex: none; width: 32px; height: 32px; margin: 2px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--g-600); color: #fff; font-size: 14px; font-weight: 800;
+      box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--g-600);
     }
 
-    /* ================= 전체화면 이미지 뷰어 ================= */
-    .viewer {
-      display: none; position: fixed; inset: 0; z-index: 4000;
-      background: #17122a; flex-direction: column;
+    /* ================= 오프라인 알림 ================= */
+    .offline-toast {
+      position: fixed; left: 12px; right: 12px; bottom: calc(12px + var(--safe-b)); z-index: 200;
+      display: none; align-items: center; gap: 10px;
+      max-width: 520px; margin: 0 auto; padding: 12px 14px; border-radius: 14px;
+      background: #2a2340; color: #fff; font-size: 14px; font-weight: 700; line-height: 1.5;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
     }
-    .viewer.show { display: flex; }
+    body.offline .offline-toast { display: flex; }
 
+    /* ================= 전체화면 이미지 창 ================= */
+    .viewer { position: fixed; inset: 0; z-index: 4000; display: flex; flex-direction: column; background: #16112a; }
     .viewer-bar {
-      display: flex; align-items: center; gap: 10px;
-      padding: calc(9px + env(safe-area-inset-top)) 12px 9px;
-      background: rgba(23,18,42,0.96); border-bottom: 1px solid rgba(255,255,255,0.10);
-      flex: 0 0 auto;
+      flex: none; display: flex; align-items: center; gap: 8px;
+      padding: calc(8px + var(--safe-t)) 10px 8px 14px;
+      background: rgba(22,17,42,.96); border-bottom: 1px solid rgba(255,255,255,.1);
     }
     .viewer-title {
-      font-size: 14.5px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+      flex: 1; min-width: 0; font-size: 14.5px; font-weight: 800; color: #fff;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .viewer-close {
-      margin-left: auto; flex: 0 0 auto; border: none; cursor: pointer;
-      background: rgba(255,255,255,0.14); color: #fff;
-      font-family: inherit; font-size: 14px; font-weight: 800;
-      padding: 10px 15px; border-radius: 999px;
+    .v-bar-btn {
+      flex: none; display: inline-flex; align-items: center; gap: 5px;
+      min-height: 42px; padding: 0 13px; border: 0; border-radius: 999px; cursor: pointer;
+      background: rgba(255,255,255,.14); color: #fff; font-size: 13.5px; font-weight: 800;
     }
-
     .viewer-stage {
-      flex: 1 1 auto; position: relative; overflow: hidden;
+      flex: 1; position: relative; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
       touch-action: none; user-select: none; -webkit-user-select: none;
     }
-    .viewer-img {
-      max-width: 100%; max-height: 100%;
-      transform-origin: center center;
-      will-change: transform; -webkit-user-drag: none;
+    /* 확대·이동은 canvas(이미지 + 원형 버튼)에 적용. 손을 떼면 will-change 를 풀어 벡터 지도가 다시 선명하게 그려짐 */
+    .viewer-canvas { position: relative; flex: none; transform-origin: center center; }
+    .viewer-canvas.moving { will-change: transform; }
+    .viewer-img { display: block; width: 100%; height: 100%; -webkit-user-drag: none; }
+    .viewer-pins { position: absolute; inset: 0; }
+    .viewer .pin { --pin: 38px; transform: scale(var(--k, 1)); }
+    .viewer .pin:active { transform: scale(calc(var(--k, 1) * .92)); }
+    .viewer-spin {
+      position: absolute; left: 50%; top: 50%; margin: -22px 0 0 -22px;
+      border-color: rgba(255,255,255,.18); border-top-color: #fff;
     }
-
-    .viewer-tools {
-      flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 9px;
-      padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
-      background: rgba(23,18,42,0.96); border-top: 1px solid rgba(255,255,255,0.10);
-    }
-    .v-btn {
-      min-width: 56px; min-height: 46px; border: none; border-radius: 13px; cursor: pointer;
-      background: rgba(255,255,255,0.14); color: #fff;
-      font-family: inherit; font-size: 17px; font-weight: 800;
-    }
-    .v-btn.wide { min-width: 84px; font-size: 14px; }
+    .viewer-msg { margin: 0; padding: 20px; color: rgba(255,255,255,.85); font-size: 15px; font-weight: 700; text-align: center; }
     .viewer-hint {
       position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
-      margin: 0; padding: 7px 14px; border-radius: 999px;
-      background: rgba(0,0,0,0.45); color: rgba(255,255,255,0.9);
-      font-size: 12px; font-weight: 700; white-space: nowrap;
-      transition: opacity 0.4s ease; pointer-events: none;
+      margin: 0; padding: 7px 14px; border-radius: 999px; white-space: nowrap; pointer-events: none;
+      background: rgba(0,0,0,.5); color: rgba(255,255,255,.92); font-size: 12px; font-weight: 700;
+      transition: opacity .4s ease;
     }
     .viewer-hint.gone { opacity: 0; }
+    .viewer-tools {
+      flex: none; display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 10px 12px calc(12px + var(--safe-b));
+      background: rgba(22,17,42,.96); border-top: 1px solid rgba(255,255,255,.1);
+    }
+    .v-btn {
+      min-width: 56px; min-height: 46px; padding: 0 10px; border: 0; border-radius: 13px; cursor: pointer;
+      display: inline-grid; place-items: center;
+      background: rgba(255,255,255,.14); color: #fff; font-size: 14px; font-weight: 800;
+    }
+    .v-btn.wide { min-width: 96px; }
 
+    /* ================= 화면 크기별 ================= */
+    @media (min-width: 640px) {
+      .hero { padding: calc(26px + var(--safe-t)) 0 40px; border-radius: 0 0 38px 38px; }
+      .hero-title { font-size: 44px; }
+      .hero-mol { width: 300px; height: 300px; right: 4%; }
+      .band { border-radius: 0 0 38px 38px; }
+      .band-title { font-size: 34px; }
+      .unit-list { grid-template-columns: 1fr 1fr; }
+      .ur-name { font-size: 24px; }
+      .c-tile { min-height: 112px; flex-direction: row; align-items: center; }
+      .c-title { font-size: 16px; }
+      .tabs { margin: 0 0 2px; padding: 2px 0 18px; flex-wrap: wrap; overflow: visible; }
+    }
+    @media (max-width: 359px) {
+      .wrap { padding-left: 12px; padding-right: 12px; }
+      .band-in { padding: 0 12px; }
+      .unit-row { padding-left: 15px; }
+      .c-tile { padding: 12px 9px; }
+      .c-title { font-size: 13px; }
+      .c-ico { width: 42px; height: 42px; }
+      .item-title { font-size: 17px; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
     }
-
-    /* 조금 큰 화면 */
-    @media (min-width: 620px) {
-      .page { padding: 22px 18px 44px; }
-      .hero { padding: 20px 24px 22px; border-radius: 28px; }
-      .hero-logo-wrap { position: absolute; top: 18px; left: 20px; margin-bottom: 0; }
-      .hero-logo { height: 24px; }
-      .hero-inner { padding: 4px 100px 0; }
-      .hero-title { font-size: 34px; }
-      .hero-desc { font-size: 15px; }
-      .panel { padding: 26px 22px 20px; border-radius: 28px; }
-      .stage-item { min-height: 54px; }
-      .stage-label { font-size: 15px; }
-      .section-title { font-size: 29px; }
-      .section-desc { font-size: 16px; }
-      .unit-btn { min-height: 76px; }
-      .unit-name { font-size: 21px; }
-      .unit-grid { grid-template-columns: 1fr 1fr; }
-      .cat-title { font-size: 19px; }
-      .nav-btn { font-size: 17px; min-height: 60px; }
-    }
-
-    @media (max-width: 360px) {
-      .hero-title { font-size: 23px; }
-      .section-title { font-size: 21px; }
-      .unit-name { font-size: 17px; }
-      .cat-title { font-size: 16px; }
-      .img-tool { font-size: 12.5px; }
-    }
-
     @media print {
-      .gate, .stage-bar, .nav-row, .viewer, .img-tools, .unit-chip-change { display: none !important; }
+      .gate, .appbar, .viewer, .offline-toast, .band-nav, .img-zoom { display: none !important; }
       .app { display: block !important; }
       body { background: #fff; }
-      .hero { background: none; border: 2px solid #000; }
-      .hero-title, .hero-desc, .hero-kicker { color: #000; }
-      .screen { display: block !important; }
+      .hero, .band { background: none !important; color: #000 !important; border: 2px solid #000; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ================= GPS 접근 게이트 ================= -->
+  <!-- ================= 위치 확인 게이트 ================= -->
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
-    <button type="button" class="gate-bypass" id="gate-bypass"
-            onclick="grantAccess()" aria-label="검토용 바로 보기" title=""></button>
+    <button type="button" class="gate-bypass" id="gate-bypass" aria-label="검토용 바로 보기" hidden></button>
     <div class="gate-card">
-      <div class="gate-spinner" id="gate-spinner"></div>
-      <div class="gate-icon" id="gate-icon" style="display:none;">📍</div>
+      <div class="spinner" id="gate-spinner"></div>
+      <div class="gate-icon" id="gate-icon" hidden></div>
       <h1 class="gate-title" id="gate-title">위치 확인 중</h1>
-      <p class="gate-desc" id="gate-desc">공장 구역 내에서만 이용할 수 있습니다.<br>위치를 확인하고 있습니다…</p>
-      <button type="button" class="gate-btn" id="gate-btn" style="display:none;" onclick="requestLocation()">위치 권한 허용하고 다시 시도</button>
-      <p class="gate-sub" id="gate-sub"></p>
+      <p class="gate-desc" id="gate-desc" hidden></p>
+      <button type="button" class="gate-btn" id="gate-btn" hidden></button>
     </div>
   </div>
 
-  <!-- ================= 본문 ================= -->
-  <div class="app">
-    <div class="page">
-      <header class="hero">
-        <div class="hero-logo-wrap" id="logo-wrap">
-          <img class="hero-logo" src="./logo.png" alt="이수스페셜티케미컬 로고"
-               onerror="document.getElementById('logo-wrap').classList.add('img-failed')">
-          <span class="hero-logo-fallback">이수스페셜티케미컬</span>
-        </div>
-        <div class="hero-inner">
-          <p class="hero-kicker">SAFETY &amp; HEALTH GUIDE</p>
-          <h1 class="hero-title">공정별 안전보건 안내</h1>
-          <p class="hero-desc">공정을 선택하면 응급처치 요령과 보호구 기준을 확인할 수 있습니다.</p>
-        </div>
-      </header>
+  <!-- ================= 본문 (스크립트가 화면을 그림) ================= -->
+  <div class="app" id="view"></div>
 
-      <div class="offline-banner" role="status">
-        현재 오프라인 상태입니다. 이미지가 표시되지 않을 수 있으니 통신 상태를 확인해 주세요.
-      </div>
+  <div class="offline-toast" role="status" id="offline-toast"></div>
 
-      <ol class="stage-bar" aria-label="진행 단계">
-        <li>
-          <button type="button" class="stage-item active" id="stage-1" aria-current="step" onclick="goStage(1)">
-            <span class="stage-num" aria-hidden="true">1</span>
-            <span class="stage-label">공정 선택</span>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="stage-item disabled" id="stage-2" onclick="goStage(2)">
-            <span class="stage-num" aria-hidden="true">2</span>
-            <span class="stage-label">안내 자료</span>
-          </button>
-        </li>
-      </ol>
-
-      <main class="panel">
-        <!-- 1단계 -->
-        <section class="screen active" id="screen-1" aria-labelledby="title-1">
-          <div class="section-title-wrap">
-            <div class="section-no" aria-hidden="true">1</div>
-            <h2 class="section-title" id="title-1" tabindex="-1">공정 선택</h2>
-          </div>
-          <p class="section-desc">해당하는 <b>공정</b>을 선택해 주세요.</p>
-
-          <div class="unit-grid" id="unit-grid"></div>
-
-          <div class="notice">
-            사고 발생 시 침착하게 응급처치 요령에 따라 조치하고, 안전환경팀에 즉시 보고 바랍니다.
-          </div>
-        </section>
-
-        <!-- 2단계 -->
-        <section class="screen" id="screen-2" aria-labelledby="title-2">
-          <div class="section-title-wrap">
-            <div class="section-no" aria-hidden="true">2</div>
-            <h2 class="section-title" id="title-2" tabindex="-1">안내 자료</h2>
-          </div>
-          <p class="section-desc">확인할 <b>항목</b>을 선택하면 안내 이미지가 표시됩니다.</p>
-
-          <div class="unit-chip">
-            <span class="unit-chip-label">선택 공정</span>
-            <span class="unit-chip-name" id="unit-chip-name"></span>
-            <button type="button" class="unit-chip-change" onclick="goStage(1)">변경</button>
-          </div>
-
-          <div class="cat-list" id="cat-list"></div>
-
-          <div class="nav-row">
-            <button type="button" class="nav-btn" onclick="goStage(1)">
-              <span aria-hidden="true">←</span><span>다른 공정 선택</span>
-            </button>
-          </div>
-        </section>
-      </main>
-    </div>
-  </div>
-
-  <!-- ================= 전체화면 이미지 뷰어 ================= -->
-  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="이미지 확대 보기">
+  <!-- ================= 전체화면 이미지 창 ================= -->
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title" hidden>
     <div class="viewer-bar">
       <span class="viewer-title" id="viewer-title"></span>
-      <button type="button" class="viewer-close" id="viewer-close">✕ 닫기</button>
+      <a class="v-bar-btn" id="v-ext" target="_blank" rel="noopener">새 창</a>
+      <button type="button" class="v-bar-btn" id="v-close">닫기</button>
     </div>
     <div class="viewer-stage" id="viewer-stage">
-      <img class="viewer-img" id="viewer-img" alt="">
+      <div class="viewer-canvas" id="viewer-canvas">
+        <img class="viewer-img" id="viewer-img" alt="" draggable="false" />
+        <div class="viewer-pins" id="viewer-pins"></div>
+      </div>
+      <span class="spinner viewer-spin" id="viewer-spin" aria-label="불러오는 중" hidden></span>
+      <p class="viewer-msg" id="viewer-msg" hidden>이미지를 불러올 수 없습니다.</p>
       <p class="viewer-hint" id="viewer-hint">두 손가락으로 확대 · 두 번 탭하면 확대/축소</p>
     </div>
     <div class="viewer-tools">
-      <button type="button" class="v-btn" id="v-out" aria-label="축소">－</button>
-      <button type="button" class="v-btn wide" id="v-reset">원본 크기</button>
-      <button type="button" class="v-btn" id="v-in" aria-label="확대">＋</button>
+      <button type="button" class="v-btn" id="v-out" aria-label="축소"></button>
+      <button type="button" class="v-btn wide" id="v-reset">전체 보기</button>
+      <button type="button" class="v-btn" id="v-in" aria-label="확대"></button>
     </div>
   </div>
 
   <script>
-    "use strict";
+  "use strict";
 
-    /* =========================================================
-     * 설정
-     * ======================================================= */
-    const IMAGE_BASE = "./";   // 이미지가 별도 폴더에 있으면 "./images/" 처럼 변경
+  /* =====================================================================
+   * 1. 설정 — 내용 변경은 대부분 이 영역에서만 하면 됩니다.
+   * =================================================================== */
+  const IMAGE_BASE = "./";          // 이미지 폴더. 예) "./images/"
+  const LOGO_SRC = "./logo.png";
+  const REVIEW_BYPASS = true;       // 검토용 숨은 버튼(위치 확인 화면 오른쪽 위). 배포 시 false
+  const ACCESS_KEEP_MIN = 30;       // 위치 확인 후 같은 창에서 다시 묻지 않는 시간(분)
 
-    // 공정 목록 (index 값이 이미지 파일 뒤 번호와 연결됨: a-1 ~ a-6)
-    const UNITS = [
-      { no: 1, name: "IPA UNIT" },
-      { no: 2, name: "Li2S Unit" },
-      { no: 3, name: "NaSH Unit" },
-      { no: 4, name: "#3 TDM Unit" },
-      { no: 5, name: "NOM/NDM UNIT" },
-      { no: 6, name: "#1, 2 TDM Unit" }
-    ];
+  // 취급 물질 (MSDS 요약 이미지는 물질별 1장)
+  const SUBSTANCES = {
+    h2s:    { code: "H₂S",      label: "황화수소",          file: "msds-h2s.png" },
+    pt:     { code: "PT",       label: "프로필렌 테트라머",   file: "msds-pt.png" },
+    nom:    { code: "NOM",      label: "노말옥틸머캅탄",      file: "msds-nom.png" },
+    octene: { code: "1-Octene", label: "1-옥텐",            file: "msds-1-octene.png" },
+    naoh:   { code: "NaOH",     label: "수산화나트륨",        file: "msds-naoh.png" },
+    nash:   { code: "NaSH",     label: "황화수소나트륨",      file: "msds-nash.png" },
+    lioh:   { code: "LiOH",     label: "수산화리튬",         file: "msds-lioh.png" }
+  };
 
-    // 항목 목록 (prefix + 공정번호 = 파일명)
-    const CATEGORIES = [
-      { key: "a", title: "응급처치 요령",            sub: "사고 발생 시 초동 처치 방법", icon: "🚑", tone: "o" },
-      { key: "b", title: "물질별 취급 보호구 착용기준", sub: "취급 물질에 따른 착용 기준", icon: "🧪", tone: "p" },
-      { key: "c", title: "보호구의 종류 및 정의",      sub: "보호구별 명칭과 용도",       icon: "🥽", tone: "p" },
-      { key: "d", title: "보안경 보관함 · 세안기 위치", sub: "현장 내 비치 위치 안내",     icon: "📍", tone: "o" }
-    ];
+  // 공정 목록 (id = 이미지 파일명·QR 주소에 쓰이는 공정 코드, substances = MSDS 버튼 순서)
+  const UNITS = [
+    { id: "tdm12",  name: "#1, 2 TDM", substances: ["h2s", "pt"] },
+    { id: "tdm3",   name: "#3 TDM",    substances: ["h2s", "pt"] },
+    { id: "nomndm", name: "NOM/NDM",   substances: ["h2s", "nom", "octene"] },
+    { id: "nash",   name: "NaSH",      substances: ["h2s", "naoh"] },
+    { id: "li2s",   name: "Li₂S",      substances: ["h2s", "nash", "lioh"] },
+    { id: "lp1",    name: "LP-1",      substances: ["h2s", "nash", "lioh"] }
+  ];
 
-    // 접근 허용 구역 (기존 안내와 동일한 좌표)
-    const GEOFENCE = [
-      { lat: 35.4386694, lng: 129.3286528 },
-      { lat: 35.4387028, lng: 129.3337833 },
-      { lat: 35.4344778, lng: 129.3337833 },
-      { lat: 35.4344472, lng: 129.3296972 }
-    ];
-    const BUFFER_METERS = 30;   // GPS 오차 완충(m). 0으로 두면 경계에서 정확히 차단
+  // 공정별 항목 (보라) — file 의 {u} 는 공정 코드로 바뀜
+  const UNIT_ITEMS = [
+    { key: "msds",     type: "msds", icon: "msds", title: "MSDS 요약 정보" },
+    { key: "firstaid", icon: "firstaid", title: "응급처치 방법",             file: "{u}-firstaid.png" },
+    { key: "ppe",      icon: "worker",   title: "취급 물질별 보호구 착용 기준", file: "{u}-ppe.png" },
+    { key: "evac",     icon: "exit",     title: "비상대피로 위치",           file: "{u}-evac.png" }
+  ];
 
-    /* =========================================================
-     * 상태
-     * ======================================================= */
-    let currentUnit = null;          // 선택된 공정 객체
-    let visitedStage2 = false;
-    let openCatKey = null;
+  // 공통 항목 (주황) — 모든 공정에 동일하게 적용
+  const COMMON_ITEMS = [
+    { key: "ppe-types", icon: "gasmask", title: "보호구 종류",               file: "common-ppe-types.png" },
+    { key: "eyewash",   icon: "eyewash", title: "세안기, 보안경 보관함 위치",  file: "common-eyewash.png" },
+    { key: "evac-map",  icon: "exit",    title: "공정 내 비상대피로 위치",     type: "map" }
+  ];
 
-    /* =========================================================
-     * 1단계: 공정 버튼 생성
-     * ======================================================= */
-    function buildUnits() {
-      const grid = document.getElementById("unit-grid");
-      grid.textContent = "";
+  // 공정 내 비상대피로 지도
+  //   image : 지도 파일명 (비어 있으면 '공정 지도 준비 중' 표시)
+  //   canvasWidth : 지도가 작아 버튼 누르기 어려우면 "160%" 등으로 늘림 → 좌우 스크롤
+  //   pins  : 지도 위 원형 버튼. 누르면 image 사진이 전체화면으로 열림
+  //           x, y  = 지도 기준 위치(%) — 왼쪽 위가 0,0 / 오른쪽 아래가 100,100
+  //           no    = 버튼 안 번호,  label = 버튼 이름(목록·사진 제목에 표시)
+  //   ※ 지도는 '지도 크게 보기'(전체화면)에서도 확대/이동되며, 원형 버튼도 함께 표시됨
+  const EVAC_MAP = {
+    image: "evac-map.svg",
+    canvasWidth: "100%",
+    pins: [   // 미리보기용 예시 버튼 2개 (위치·이름은 임시)
+      { no: 1, x: 55.5, y: 67.5, label: "TDM 동측 비상구 (예시)", image: "evac-point-1.png" },
+      { no: 2, x: 47.9, y: 28.0, label: "주차장 집결지 (예시)",   image: "evac-point-2.png" }
+    ]
+  };
 
-      UNITS.forEach((u, i) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "unit-btn " + (i % 2 === 0 ? "p" : "o");
+  // 접근 허용 구역 (기존과 동일한 좌표)
+  const GEOFENCE = [
+    { lat: 35.4386694, lng: 129.3286528 },
+    { lat: 35.4387028, lng: 129.3337833 },
+    { lat: 35.4344778, lng: 129.3337833 },
+    { lat: 35.4344472, lng: 129.3296972 }
+  ];
+  const BUFFER_METERS = 30;          // GPS 오차 완충(m). 0이면 경계에서 정확히 차단
 
-        const num = document.createElement("span");
-        num.className = "unit-num";
-        num.setAttribute("aria-hidden", "true");
-        num.textContent = String(u.no);
+  /* =====================================================================
+   * 2. 아이콘
+   * =================================================================== */
+  const ICONS = {
+    map:     '<path d="M9 4.5L3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2z"/><path d="M9 4.5v13"/><path d="M15 6.5v13"/>',
+    chevR:   '<path d="M9 6l6 6-6 6"/>',
+    chevD:   '<path d="M6 9l6 6 6-6"/>',
+    back:    '<path d="M15 5l-7 7 7 7"/>',
+    home:    '<path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/>',
+    zoom:    '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/><path d="M11 8.5v5M8.5 11h5"/>',
+    ext:     '<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+    image:   '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-5-5L6 19.5"/>',
+    pin:     '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+    ban:     '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+    alert:   '<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.3v.2"/>',
+    plus:    '<path d="M12 5v14M5 12h14"/>',
+    minus:   '<path d="M5 12h14"/>'
+  };
+  function svg(name, size, sw) {
+    const s = size || 22;
+    return '<svg class="ic" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+           'stroke-width="' + (sw || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+           ICONS[name] + '</svg>';
+  }
 
-        const name = document.createElement("span");
-        name.className = "unit-name";
-        name.textContent = u.name;
 
-        const arrow = document.createElement("span");
-        arrow.className = "unit-arrow";
-        arrow.setAttribute("aria-hidden", "true");
-        arrow.textContent = "›";
+  // 항목 그림 아이콘 (48×48 격자, 면 채움) — 안전보건표지(ISO 7010) 형태를 참고해 직접 그림
+  const PICTOS = {
+    // MSDS 요약 정보: 문서 + 유해성 마름모(!)
+    msds:
+      '<path fill-rule="evenodd" d="M12 3.5H29.5L38.5 12.5V42.5A2 2 0 0 1 36.5 44.5H12A2 2 0 0 1 10 42.5V5.5A2 2 0 0 1 12 3.5Z' +
+      'M29 5.8V13H36.2Z M24 19.2L33 28.2L24 37.2L15 28.2Z"/>' +
+      '<rect x="22.7" y="22.6" width="2.6" height="7.6" rx="1.2"/><circle cx="24" cy="33.1" r="1.5"/>',
+    // 응급처치 방법: 구급함 + 십자
+    firstaid:
+      '<path d="M17.5 13V9.8A2.3 2.3 0 0 1 19.8 7.5H28.2A2.3 2.3 0 0 1 30.5 9.8V13" stroke="currentColor" stroke-width="3.4" fill="none"/>' +
+      '<path fill-rule="evenodd" d="M9.5 13H38.5A4 4 0 0 1 42.5 17V38A4 4 0 0 1 38.5 42H9.5A4 4 0 0 1 5.5 38V17A4 4 0 0 1 9.5 13Z' +
+      'M21.6 20.5H26.4V25.1H31V29.9H26.4V34.5H21.6V29.9H17V25.1H21.6Z"/>',
+    // 보호구 착용 기준: 안전모 + 보안경을 착용한 작업자
+    worker:
+      '<path fill-rule="evenodd" d="M11.5 20C11.5 12.6 17 7.4 24 7.4S36.5 12.6 36.5 20Z M22.4 8.6H25.6V19H22.4Z"/>' +
+      '<path d="M7.5 19.4H40.5A1.6 1.6 0 0 1 40.5 22.6H7.5A1.6 1.6 0 0 1 7.5 19.4Z"/>' +
+      '<path fill-rule="evenodd" d="M13.6 24.6H34.4V27.3C34.4 33.8 29.8 38 24 38S13.6 33.8 13.6 27.3Z' +
+      'M15.6 26.2H22.6V29.8A1.6 1.6 0 0 1 21 31.4H17.2A1.6 1.6 0 0 1 15.6 29.8Z M25.4 26.2H32.4V29.8A1.6 1.6 0 0 1 30.8 31.4H27A1.6 1.6 0 0 1 25.4 29.8Z"/>' +
+      '<path d="M9 45.5C9 40.5 13.6 38.6 18.4 38.4C19.8 40.5 21.8 41.6 24 41.6S28.2 40.5 29.6 38.4C34.4 38.6 39 40.5 39 45.5Z"/>',
+    // 비상대피로: 달리는 사람 (비상구 표지의 인물 형태)
+    exit:
+      '<circle cx="31.6" cy="7.2" r="5.2"/>' +
+      '<path d="M23.6 12.2H32.6C34.2 12.2 35.2 13.8 34.6 15.3L29.6 27C29.1 28.1 28 28.8 26.8 28.8H21.6C19.9 28.8 18.7 27.1 19.3 25.5L21.6 13.9C21.8 12.9 22.6 12.2 23.6 12.2Z"/>' +
+      '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M32.6 14.8L35.6 21.6L41.2 22.2" stroke-width="5.2"/>' +
+        '<path d="M24.4 14L17.6 15.8L13.8 21.4" stroke-width="5.2"/>' +
+        '<path d="M26.4 26.8L31.2 33.4L31.4 43.8" stroke-width="5.8"/>' +
+        '<path d="M22.4 26.4L17.4 34.2L10.6 30.6" stroke-width="5.8"/>' +
+      '</g>',
+    // 방독마스크: 전면형 안면부 + 시야창 + 좌우 정화통
+    gasmask:
+      '<mask id="{id}"><rect width="48" height="48" fill="#fff"/>' +
+        '<path d="M16.4 10.2H31.6C33.4 10.2 34.8 11.6 34.8 13.4V16.8C34.8 18.7 33.3 20.2 31.4 20.2H27.7C26.5 20.2 25.5 19.5 25.1 18.4L24 15.8L22.9 18.4C22.5 19.5 21.5 20.2 20.3 20.2H16.6C14.7 20.2 13.2 18.7 13.2 16.8V13.4C13.2 11.6 14.6 10.2 16.4 10.2Z" fill="#000"/>' +
+        '<circle cx="11" cy="32" r="9" fill="#000"/><circle cx="37" cy="32" r="9" fill="#000"/><circle cx="24" cy="29.2" r="3" fill="#000"/>' +
+      '</mask>' +
+      '<path mask="url(#{id})" d="M24 4C33 4 39 9.6 39 17.6C39 26 33.6 33 24 35.5C14.4 33 9 26 9 17.6C9 9.6 15 4 24 4Z"/>' +
+      '<circle cx="24" cy="29.2" r="1.6"/>' +
+      '<rect x="3.5" y="26" width="15" height="12" rx="3" transform="rotate(-18 11 32)"/>' +
+      '<rect x="29.5" y="26" width="15" height="12" rx="3" transform="rotate(18 37 32)"/>',
+    // 세안기: 세안장치 표지 형태 — 노즐에서 점선 물줄기가 눈으로 + 응급 십자
+    eyewash:
+      '<g fill="none" stroke="currentColor" stroke-width="3">' +
+        '<path d="M17 3V10.4M9 10.4H25" stroke-linecap="round"/>' +
+        '<path d="M17 13.6V27.2M12.2 13.8L5.2 24.8M21.8 13.8L28.8 24.8" stroke-dasharray="3 2.6"/>' +
+        '<path d="M3.2 38.4C7.4 32.6 12 30.4 17 30.4S26.6 32.6 30.8 38.4C26.6 44.2 22 46.4 17 46.4S7.4 44.2 3.2 38.4Z" stroke-linejoin="round"/>' +
+        '<circle cx="17" cy="38.4" r="4.8"/>' +
+      '</g>' +
+      '<circle cx="17" cy="38.4" r="2"/>' +
+      '<path d="M35.2 4H40.4V9.4H45.8V14.6H40.4V20H35.2V14.6H29.8V9.4H35.2Z"/>'
+  };
+  let pictoSeq = 0;
+  function picto(name, size) {
+    const id = "pm" + (++pictoSeq);
+    return '<svg class="ic" width="' + size + '" height="' + size + '" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" focusable="false">' +
+           PICTOS[name].split("{id}").join(id) + '</svg>';
+  }
 
-        btn.appendChild(num);
-        btn.appendChild(name);
-        btn.appendChild(arrow);
-        btn.addEventListener("click", function () { selectUnit(u); });
-        grid.appendChild(btn);
+  /* =====================================================================
+   * 3. 도우미
+   * =================================================================== */
+  const $ = function (sel) { return document.querySelector(sel); };
+  const view = $("#view");
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function byKey(list, k) { const m = {}; list.forEach(function (x) { m[x[k]] = x; }); return m; }
+  const UNIT_BY_ID = byKey(UNITS, "id");
+  const UNIT_ITEM_BY_KEY = byKey(UNIT_ITEMS, "key");
+  const COMMON_BY_KEY = byKey(COMMON_ITEMS, "key");
+  function unitFull(u) { return u.name + " Unit"; }
+  function unitHtml(u) { return esc(u.name) + ' <span class="unit-sfx">Unit</span>'; }
+  function codes(u) { return u.substances.map(function (k) { return SUBSTANCES[k].code; }).join(", "); }
+  function tryHistory(fn) { try { fn(); return true; } catch (e) { return false; } }
+  function hstate() { try { return history.state || {}; } catch (e) { return {}; } }
+
+  /* =====================================================================
+   * 4. 화면 주소
+   *    #/                       공정 선택 (첫 화면)
+   *    #/u/{공정}                선택 공정
+   *    #/u/{공정}/{항목}[/{물질}]  공정별 자료
+   *    #/u/{공정}/c/{항목}        공통 자료 (공정 화면에서 들어온 경우)
+   *    #/c/{항목}                공통 자료 (첫 화면에서 들어온 경우)
+   * =================================================================== */
+  function parseRoute(hash) {
+    const p = String(hash || "").replace(/^#\/?/, "").split("/").filter(Boolean);
+    if (p[0] === "c" && COMMON_BY_KEY[p[1]]) return { view: "common", unit: null, item: COMMON_BY_KEY[p[1]] };
+    if (p[0] !== "u" || !UNIT_BY_ID[p[1]]) return { view: "home" };
+    const unit = UNIT_BY_ID[p[1]];
+    if (p[2] === "c" && COMMON_BY_KEY[p[3]]) return { view: "common", unit: unit, item: COMMON_BY_KEY[p[3]] };
+    const item = UNIT_ITEM_BY_KEY[p[2]];
+    if (!item) return { view: "unit", unit: unit };
+    const r = { view: "item", unit: unit, item: item };
+    if (item.type === "msds") r.sub = unit.substances.indexOf(p[3]) >= 0 ? p[3] : unit.substances[0];
+    return r;
+  }
+  function hashOf(r) {
+    if (r.view === "home") return "#/";
+    if (r.view === "unit") return "#/u/" + r.unit.id;
+    if (r.view === "common") return (r.unit ? "#/u/" + r.unit.id + "/c/" : "#/c/") + r.item.key;
+    return "#/u/" + r.unit.id + "/" + r.item.key + (r.sub ? "/" + r.sub : "");
+  }
+  function parentOf(r) {
+    if ((r.view === "item" || r.view === "common") && r.unit) return { view: "unit", unit: r.unit };
+    return { view: "home" };
+  }
+  function backLabel(r) {
+    const p = parentOf(r);
+    return p.view === "unit" ? unitFull(p.unit) : "공정 선택";
+  }
+  function titleOf(r) {
+    const base = "유해화학물질 정보제공";
+    if (r.view === "home") return base;
+    if (r.view === "unit") return unitFull(r.unit) + " | " + base;
+    return r.item.title + (r.unit ? " · " + unitFull(r.unit) : "") + " | " + base;
+  }
+
+  /* =====================================================================
+   * 5. 화면 그리기
+   * =================================================================== */
+  let currentHash = null;   // 지금 그려진 화면
+  let expanded = null;      // 펼쳐진 항목 (MSDS)
+
+  // 상단 색띠 + 스크롤 시 나타나는 막대
+  function band(o) {
+    const home = o.home
+      ? '<button type="button" class="pill pill-home" data-nav="#/" aria-label="처음 화면으로">' + svg("home", 20) + '</button>' : '';
+    return '<header class="band band-' + o.tone + '"><div class="band-in">' +
+        '<div class="band-nav">' +
+          '<button type="button" class="pill" data-back aria-label="뒤로: ' + esc(o.back) + '">' +
+            svg("back", 20, 2.4) + '<span>' + esc(o.back) + '</span></button>' + home +
+        '</div>' +
+        '<h1 class="band-title' + (o.xl ? ' xl' : '') + '" tabindex="-1" data-focus>' + (o.titleHtml || esc(o.title)) + '</h1>' +
+        (o.chips || '') +
+      '</div></header>' +
+      '<div class="appbar appbar-' + o.tone + '" id="appbar" aria-hidden="true"><div class="appbar-in">' +
+        '<button type="button" class="ab-back" data-back tabindex="-1" aria-label="뒤로: ' + esc(o.back) + '">' +
+          svg("back", 24, 2.4) + '</button>' +
+        '<span class="ab-title">' + esc(o.title) + '</span>' +
+      '</div></div>';
+  }
+
+  function unitRow(u, i) {
+    const chips = u.substances.map(function (k) {
+      return '<span class="chip">' + esc(SUBSTANCES[k].code) + '</span>';
+    }).join("");
+    return '<button type="button" class="unit-row rise" style="--i:' + i + '" data-nav="#/u/' + u.id + '" ' +
+        'aria-label="' + esc(unitFull(u)) + ', 취급 물질 ' + esc(codes(u)) + '">' +
+      '<span class="ur-main"><span class="ur-name">' + unitHtml(u) + '</span>' +
+        '<span class="ur-chips">' + chips + '</span></span>' +
+      '<span class="ur-go">' + svg("chevR", 20, 2.6) + '</span>' +
+      '</button>';
+  }
+
+  function commonGrid(unit, start) {
+    const base = unit ? "#/u/" + unit.id + "/c/" : "#/c/";
+    return '<nav class="common-grid" aria-label="공통 항목">' + COMMON_ITEMS.map(function (c, i) {
+      return '<button type="button" class="c-tile rise" style="--i:' + (start + i) + '" data-nav="' + base + c.key + '">' +
+        '<span class="c-ico">' + picto(c.icon, 34) + '</span>' +
+        '<span class="c-title">' + esc(c.title) + '</span></button>';
+    }).join("") + '</nav>';
+  }
+
+  function unitItem(u, it, i) {
+    if (it.type === "msds") {
+      const open = expanded === "msds";
+      const subs = u.substances.map(function (k) {
+        const s = SUBSTANCES[k];
+        return '<button type="button" class="sub-btn" data-nav="#/u/' + u.id + '/msds/' + k + '">' +
+          '<span class="sub-code">' + esc(s.code) + '</span>' +
+          '<span class="sub-label">' + esc(s.label) + '</span>' +
+          '<span class="chev">' + svg("chevR", 18) + '</span></button>';
+      }).join("");
+      return '<div class="item rise' + (open ? ' open' : '') + '" style="--i:' + i + '">' +
+        '<button type="button" class="item-btn" data-toggle="msds" aria-expanded="' + open + '" aria-controls="sub-msds">' +
+          '<span class="item-ico">' + picto(it.icon, 36) + '</span>' +
+          '<span class="item-title">' + esc(it.title) + '</span>' +
+          '<span class="chev chev-d">' + svg("chevD", 22) + '</span>' +
+        '</button>' +
+        '<div class="sub-wrap" id="sub-msds"><div class="sub-inner"><div class="sub-grid">' + subs + '</div></div></div>' +
+      '</div>';
+    }
+    return '<div class="item rise" style="--i:' + i + '"><button type="button" class="item-btn" data-nav="#/u/' + u.id + '/' + it.key + '">' +
+      '<span class="item-ico">' + picto(it.icon, 36) + '</span>' +
+      '<span class="item-title">' + esc(it.title) + '</span>' +
+      '<span class="chev">' + svg("chevR", 22) + '</span></button></div>';
+  }
+
+  function imageBlock(file, label) {
+    const src = IMAGE_BASE + file;
+    return '<figure class="imgbox rise" style="--i:1" data-src="' + esc(src) + '" data-label="' + esc(label) + '">' +
+      '<div class="img-frame">' +
+        '<div class="img-state img-loading"><span class="spinner" aria-label="불러오는 중"></span></div>' +
+        '<button type="button" class="img-hit" data-zoom hidden aria-label="' + esc(label) + ' 크게 보기">' +
+          '<img alt="' + esc(label) + '">' +
+          '<span class="img-zoom">' + svg("zoom", 22) + '</span>' +
+        '</button>' +
+        '<div class="img-state img-error" hidden>' +
+          '<span class="err-ico">' + svg("image", 32) + '</span>' +
+          '<p class="err-text"></p>' +
+          '<code class="err-file">' + esc(file) + '</code>' +
+          '<button type="button" class="err-retry">다시 시도</button>' +
+        '</div>' +
+      '</div></figure>';
+  }
+
+  function evacMap() {
+    const m = EVAC_MAP;
+    if (!m.image) {
+      return '<div class="evac rise" style="--i:1"><div class="evac-empty">' +
+          '<span class="evac-empty-ico">' + svg("map", 32) + '</span>' +
+          '<p class="evac-empty-title">공정 지도 준비 중</p>' +
+        '</div></div>';
+    }
+    const legend = m.pins.map(function (p, i) {
+      return '<li><button type="button" class="legend-btn" data-pin="' + i + '">' +
+        '<span class="pin-mini">' + esc(p.no) + '</span><span class="t">' + esc(p.label) + '</span>' +
+        '<span class="chev">' + svg("chevR", 18) + '</span></button></li>';
+    }).join("");
+    return '<div class="evac rise" style="--i:1">' +
+        '<div class="evac-scroll"><div class="evac-canvas" style="width:' + esc(m.canvasWidth || "100%") + '">' +
+          '<button type="button" class="evac-open" data-evac-open tabindex="-1" aria-label="공장 배치도 크게 보기">' +
+            '<img src="' + esc(IMAGE_BASE + m.image) + '" alt="공정 내 비상대피로 지도 (공장 배치도)" draggable="false">' +
+          '</button>' + pinButtons(m.pins, "data-pin") +
+        '</div></div>' +
+        '<div class="evac-error" hidden>' +
+          '<span class="err-ico">' + svg("map", 32) + '</span>' +
+          '<p class="err-text"></p><code class="err-file">' + esc(m.image) + '</code>' +
+        '</div>' +
+        '<button type="button" class="evac-bar" data-evac-open>' + svg("zoom", 20) + '<span>지도 크게 보기</span></button>' +
+      '</div>' +
+      (legend ? '<p class="evac-note rise" style="--i:2">지도의 번호 버튼(또는 아래 목록)을 누르면 비상대피로 사진이 열립니다.</p>' +
+                '<ol class="legend rise" style="--i:3" aria-label="비상대피로 목록">' + legend + '</ol>' : '');
+  }
+
+  // 원형 버튼 (공정 지도 화면·전체화면 지도 공용)
+  function pinButtons(pins, attr) {
+    return pins.map(function (p, i) {
+      return '<button type="button" class="pin" style="left:' + Number(p.x) + '%;top:' + Number(p.y) + '%" ' + attr + '="' + i +
+        '" aria-label="비상대피로 ' + esc(p.no) + ' ' + esc(p.label) + '">' + esc(p.no) + '</button>';
+    }).join("");
+  }
+  function openEvacMap() {
+    openViewer(IMAGE_BASE + EVAC_MAP.image, COMMON_BY_KEY["evac-map"].title, EVAC_MAP.pins);
+  }
+  function openPin(p) {
+    openViewer(IMAGE_BASE + p.image, "비상대피로 " + p.no + " · " + p.label);
+  }
+
+  // 첫 화면 배경의 분자 구조(벤젠 고리) 선 그림
+  const HERO_MOL =
+    '<svg class="hero-mol" viewBox="0 0 200 200" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true" focusable="false">' +
+      '<path d="M70 40L100 57V92L70 109L40 92V57Z"/><path d="M48 62V87M70 101L92 88M92 62L70 49" stroke-width="3"/>' +
+      '<path d="M100 92L130 109V144L100 161L70 144V109"/><path d="M122 114V139M100 153L78 140" stroke-width="3"/>' +
+      '<path d="M100 57L130 40L160 57V92L130 109"/><path d="M130 144L160 161M40 92L14 107M70 40V10"/>' +
+      '<g fill="#fff" stroke="none"><circle cx="70" cy="10" r="7"/><circle cx="14" cy="107" r="7"/><circle cx="160" cy="161" r="7"/><circle cx="130" cy="40" r="5"/></g>' +
+    '</svg>';
+
+  function viewHome() {
+    return '<header class="hero">' + HERO_MOL + '<div class="band-in">' +
+        '<span class="logo-chip"><img src="' + esc(LOGO_SRC) + '" alt="이수스페셜티케미컬" ' +
+          'onerror="this.parentNode.classList.add(\'fallback\')"><span>이수스페셜티케미컬</span></span>' +
+        '<h1 class="hero-title" tabindex="-1" data-focus>유해화학물질 정보제공</h1>' +
+      '</div></header>' +
+      '<main class="wrap">' +
+        '<nav class="unit-list" aria-label="공정 선택">' + UNITS.map(unitRow).join("") + '</nav>' +
+        commonGrid(null, UNITS.length) +
+      '</main>';
+  }
+
+  function viewUnit(r) {
+    const u = r.unit;
+    const chips = '<div class="band-chips"><span class="sr">취급 물질: </span>' + u.substances.map(function (k) {
+      return '<span class="band-chip">' + esc(SUBSTANCES[k].code) + '</span>';
+    }).join("") + '</div>';
+    return band({ tone: "p", back: backLabel(r), title: unitFull(u), titleHtml: unitHtml(u), xl: true, chips: chips }) +
+      '<main class="wrap">' +
+        '<div class="items">' + UNIT_ITEMS.map(function (it, i) { return unitItem(u, it, i); }).join("") + '</div>' +
+        commonGrid(u, UNIT_ITEMS.length) +
+      '</main>';
+  }
+
+  function viewItem(r) {
+    const u = r.unit, it = r.item;
+    let top = "", file, label;
+    if (it.type === "msds") {
+      const s = SUBSTANCES[r.sub];
+      top = '<nav class="tabs rise" aria-label="물질 선택">' + u.substances.map(function (k) {
+          const x = SUBSTANCES[k];
+          return '<button type="button" class="tab" data-nav="#/u/' + u.id + '/msds/' + k + '" data-replace' +
+            (k === r.sub ? ' aria-current="page"' : '') + '>' + esc(x.code) + '<small>' + esc(x.label) + '</small></button>';
+        }).join("") + '</nav>';
+      file = s.file;
+      label = s.label + "(" + s.code + ") MSDS 요약 정보";
+    } else {
+      file = it.file.replace("{u}", u.id);
+      label = unitFull(u) + " · " + it.title;
+    }
+    return band({ tone: "p", back: backLabel(r), home: true, title: it.title }) +
+      '<main class="wrap">' + top + imageBlock(file, label) + '</main>';
+  }
+
+  function viewCommon(r) {
+    const c = r.item;
+    const body = c.type === "map" ? evacMap() : imageBlock(c.file, c.title);
+    return band({ tone: "o", back: backLabel(r), home: !!r.unit, title: c.title }) +
+      '<main class="wrap">' + body + '</main>';
+  }
+
+  // 공정 버튼: 한 줄에 안 들어가는 버튼이 하나라도 있으면 전체를 같은 2줄 형태로 맞춤
+  function fitUnitRows() {
+    const list = view.querySelector(".unit-list");
+    if (!list) return;
+    list.classList.remove("stacked");
+    const wrapped = Array.prototype.some.call(list.querySelectorAll(".ur-main"), function (m) {
+      return m.lastElementChild.offsetTop > m.firstElementChild.offsetTop + 4;
+    });
+    list.classList.toggle("stacked", wrapped);
+  }
+  window.addEventListener("resize", fitUnitRows);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitUnitRows);
+
+  // 색띠 제목이 화면 밖으로 나가면 상단 막대 표시
+  let appbarIO = null;
+  function setupAppbar() {
+    if (appbarIO) { appbarIO.disconnect(); appbarIO = null; }
+    const bar = document.getElementById("appbar");
+    const anchor = view.querySelector(".band-title");
+    if (!bar || !anchor || !("IntersectionObserver" in window)) return;
+    const back = bar.querySelector(".ab-back");
+    appbarIO = new IntersectionObserver(function (entries) {
+      const e = entries[entries.length - 1];
+      const show = !e.isIntersecting && e.boundingClientRect.height > 0 && e.boundingClientRect.bottom < 60;
+      bar.classList.toggle("show", show);
+      bar.setAttribute("aria-hidden", String(!show));
+      back.tabIndex = show ? 0 : -1;
+    }, { rootMargin: "-56px 0px 0px 0px", threshold: 0 });
+    appbarIO.observe(anchor);
+  }
+
+  // 이동 방식
+  //  - 일반 브라우저: 브라우저 기록을 사용 (휴대폰 '뒤로' 버튼 연동, 주소로 화면 공유 가능)
+  //  - 기록 기능이 막힌 환경(앱 안 파일 미리보기 등): 주소를 바꾸지 않고 화면 안에서만 이동
+  //    → 어떤 환경에서도 버튼을 누를 때 '외부 링크' 확인 창이 뜨지 않음
+  let memMode = false;
+  let memHash = "#/";
+  const memStack = [];
+  function curHash() { return memMode ? memHash : location.hash; }
+  function toMemMode() { memMode = true; memHash = currentHash || "#/"; }
+
+  function render(opts) {
+    opts = opts || {};
+    const prevY = window.scrollY;
+    const r = parseRoute(curHash());
+    const key = hashOf(r);
+    if (key === currentHash && !opts.force) return;
+    if (memMode) memHash = key;
+    else if (location.hash !== key && !tryHistory(function () { history.replaceState(hstate(), "", key); })) toMemMode();
+    const sameView = opts.keepScroll;
+    currentHash = key;
+
+    const st = opts.state || (memMode ? {} : hstate());
+    expanded = opts.restore ? (st.expanded || null) : null;
+
+    let html;
+    if (r.view === "home") html = viewHome();
+    else if (r.view === "unit") html = viewUnit(r);
+    else if (r.view === "item") html = viewItem(r);
+    else html = viewCommon(r);
+    view.innerHTML = html;
+    view.classList.remove("enter");
+    if (!sameView) { void view.offsetWidth; view.classList.add("enter"); }
+    mountImages(view);
+    document.title = titleOf(r);
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", r.view === "common" ? "#ee6f15" : "#4f35ba");
+
+    let y = 0;
+    if (opts.keepScroll) y = prevY;
+    else if (opts.restore && typeof st.scrollY === "number") y = st.scrollY;
+    window.scrollTo(0, y);
+    setupAppbar();
+    fitUnitRows();
+
+    const tab = view.querySelector('.tab[aria-current="page"]');
+    if (tab && tab.parentNode.scrollWidth > tab.parentNode.clientWidth) {
+      tab.parentNode.scrollLeft = tab.offsetLeft - (tab.parentNode.clientWidth - tab.offsetWidth) / 2;
+    }
+    if (opts.focusSel) {
+      const el = view.querySelector(opts.focusSel);
+      if (el) el.focus({ preventScroll: true });
+    } else if (opts.focus) {
+      const h = view.querySelector("[data-focus]");
+      if (h) h.focus({ preventScroll: true });
+    }
+  }
+
+  /* =====================================================================
+   * 6. 이동 (휴대폰 '뒤로' 버튼과 화면 안 '뒤로' 버튼이 같게 동작)
+   * =================================================================== */
+  function navigate(hash, opts) {
+    opts = opts || {};
+    const target = hashOf(parseRoute(hash));
+    if (target === currentHash) return;
+    if (!memMode) {
+      const st = hstate();
+      const depth = st.depth || 0;
+      // 지금 화면의 스크롤·펼침 상태를 기억해 두었다가 '뒤로' 올 때 복원
+      const ok = tryHistory(function () {
+        history.replaceState(Object.assign({}, st, { scrollY: window.scrollY, expanded: expanded }), "");
+        if (opts.replace) history.replaceState({ depth: depth }, "", target);
+        else history.pushState({ depth: depth + 1 }, "", target);
       });
+      if (!ok) toMemMode();
     }
-
-    function selectUnit(unit) {
-      currentUnit = unit;
-      document.getElementById("unit-chip-name").textContent = unit.name;
-      openCatKey = null;
-      buildCategories();
-      setStage(2);
+    if (memMode) {
+      if (!opts.replace) memStack.push({ hash: currentHash, scrollY: window.scrollY, expanded: expanded });
+      memHash = target;
     }
+    render({ keepScroll: opts.keepScroll, focus: !opts.focusSel, focusSel: opts.focusSel });
+  }
 
-    /* =========================================================
-     * 2단계: 항목 버튼 + 이미지
-     * ======================================================= */
-    function buildCategories() {
-      const list = document.getElementById("cat-list");
-      list.textContent = "";
-
-      CATEGORIES.forEach(cat => {
-        const item = document.createElement("div");
-        item.className = "cat-item " + cat.tone;
-        item.dataset.key = cat.key;
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "cat-btn";
-        btn.setAttribute("aria-expanded", "false");
-
-        const icon = document.createElement("span");
-        icon.className = "cat-icon";
-        icon.setAttribute("aria-hidden", "true");
-        icon.textContent = cat.icon;
-
-        const textWrap = document.createElement("span");
-        const title = document.createElement("span");
-        title.className = "cat-title";
-        title.textContent = cat.title;
-        const sub = document.createElement("span");
-        sub.className = "cat-sub";
-        sub.textContent = cat.sub;
-        textWrap.appendChild(title);
-        textWrap.appendChild(sub);
-
-        const chev = document.createElement("span");
-        chev.className = "cat-chev";
-        chev.setAttribute("aria-hidden", "true");
-        chev.textContent = "▾";
-
-        btn.appendChild(icon);
-        btn.appendChild(textWrap);
-        btn.appendChild(chev);
-
-        const body = document.createElement("div");
-        body.className = "cat-body";
-        body.hidden = true;
-
-        btn.addEventListener("click", function () { toggleCategory(cat, item, btn, body); });
-
-        item.appendChild(btn);
-        item.appendChild(body);
-        list.appendChild(item);
-      });
-    }
-
-    function fileNameFor(cat) {
-      return cat.key + "-" + currentUnit.no + ".png";
-    }
-
-    function toggleCategory(cat, item, btn, body) {
-      const willOpen = openCatKey !== cat.key;
-
-      // 다른 항목 닫기 (한 번에 하나만)
-      document.querySelectorAll(".cat-item.open").forEach(el => {
-        el.classList.remove("open");
-        el.querySelector(".cat-btn").setAttribute("aria-expanded", "false");
-        el.querySelector(".cat-body").hidden = true;
-      });
-
-      if (!willOpen) { openCatKey = null; return; }
-
-      openCatKey = cat.key;
-      item.classList.add("open");
-      btn.setAttribute("aria-expanded", "true");
-      body.hidden = false;
-
-      if (!body.dataset.built) {
-        body.appendChild(buildImageBlock(cat));
-        body.dataset.built = "1";
+  function goBack() {
+    if (memMode) {
+      if (memStack.length) {
+        const prev = memStack.pop();
+        memHash = prev.hash;
+        render({ restore: true, state: prev, focus: true });
+      } else {
+        navigate(hashOf(parentOf(parseRoute(memHash))), { replace: true });
       }
-
-      // 열린 항목이 화면에 보이도록 스크롤
-      window.requestAnimationFrame(function () {
-        const top = item.getBoundingClientRect().top + window.pageYOffset - 12;
-        window.scrollTo({ top: top, behavior: "smooth" });
-      });
+      return;
     }
+    if ((hstate().depth || 0) > 0) history.back();
+    else navigate(hashOf(parentOf(parseRoute(location.hash))), { replace: true });
+  }
 
-    // 이미지 블록: 로딩 스피너 → 이미지 / 실패 시 안내 + 다시 시도
-    function buildImageBlock(cat) {
-      const file = fileNameFor(cat);
-      const src = IMAGE_BASE + file;
-      const label = currentUnit.name + " · " + cat.title;
+  function toggleItem(btn) {
+    const item = btn.closest(".item");
+    const willOpen = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(willOpen));
+    item.classList.toggle("open", willOpen);
+    expanded = willOpen ? btn.getAttribute("data-toggle") : null;
+    if (!memMode) tryHistory(function () { history.replaceState(Object.assign({}, hstate(), { expanded: expanded }), ""); });
+    if (willOpen) {
+      setTimeout(function () {
+        const rect = item.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight - 12) {
+          window.scrollBy({ top: Math.min(rect.bottom - window.innerHeight + 16, rect.top - 72), behavior: "smooth" });
+        }
+      }, 320);
+    }
+  }
 
-      const box = document.createElement("div");
+  document.addEventListener("click", function (e) {
+    if (e.defaultPrevented || e.button !== 0) return;
+    const el = e.target.closest("[data-nav],[data-back],[data-toggle],[data-zoom],[data-pin],[data-evac-open]");
+    if (!el || !view.contains(el)) return;
 
-      const frame = document.createElement("div");
-      frame.className = "img-frame";
+    if (el.hasAttribute("data-nav")) {
+      if (el.hasAttribute("data-replace")) {
+        navigate(el.getAttribute("data-nav"), { replace: true, keepScroll: true, focusSel: '.tab[aria-current="page"]' });
+      } else {
+        navigate(el.getAttribute("data-nav"));
+      }
+    } else if (el.hasAttribute("data-back")) {
+      goBack();
+    } else if (el.hasAttribute("data-toggle")) {
+      toggleItem(el);
+    } else if (el.hasAttribute("data-zoom")) {
+      const box = el.closest(".imgbox");
+      const img = box.querySelector("img");
+      openViewer(img.currentSrc || img.src, box.getAttribute("data-label"));
+    } else if (el.hasAttribute("data-pin")) {
+      const p = EVAC_MAP.pins[Number(el.getAttribute("data-pin"))];
+      if (p) openPin(p);
+    } else if (el.hasAttribute("data-evac-open")) {
+      openEvacMap();
+    }
+  });
 
-      const loading = document.createElement("div");
-      loading.className = "img-loading";
-      loading.innerHTML = '<span class="img-spinner" aria-hidden="true"></span><span>이미지 불러오는 중…</span>';
+  window.addEventListener("popstate", function (e) {
+    if (memMode) return;
+    const st = e.state || {};
+    const want = st.viewer === true ? 1 : (Number(st.viewer) || 0);   // 이 기록에서 열려 있어야 할 창 수
+    if (want < vStack.length) closeViewerTo(want);
+    else if (want > vStack.length) { history.back(); return; }
+    render({ restore: true });
+  });
+  window.addEventListener("hashchange", function () { if (!memMode) render({ restore: true }); });
 
-      const err = document.createElement("div");
-      err.className = "img-error";
-      err.style.display = "none";
-      const eIcon = document.createElement("span");
-      eIcon.className = "e-icon";
-      eIcon.setAttribute("aria-hidden", "true");
-      eIcon.textContent = "🖼️";
-      const eText = document.createElement("span");
-      eText.className = "e-text";
-      eText.textContent = "이미지를 불러올 수 없습니다. 통신 상태를 확인하거나 현장 게시판의 인쇄본을 확인해 주세요.";
-      const eFile = document.createElement("span");
-      eFile.className = "e-file";
-      eFile.textContent = file;
-      const eRetry = document.createElement("button");
-      eRetry.type = "button";
-      eRetry.className = "e-retry";
-      eRetry.textContent = "다시 시도";
-      err.appendChild(eIcon); err.appendChild(eText); err.appendChild(eFile); err.appendChild(eRetry);
+  /* =====================================================================
+   * 7. 이미지 불러오기 (로딩 → 표시 / 실패 시 안내 + 다시 시도)
+   * =================================================================== */
+  function mountImages(root) {
+    root.querySelectorAll(".imgbox").forEach(function (box) {
+      const img = box.querySelector("img");
+      const hit = box.querySelector(".img-hit");
+      const loading = box.querySelector(".img-loading");
+      const error = box.querySelector(".img-error");
+      const src = box.getAttribute("data-src");
 
-      const img = document.createElement("img");
-      img.className = "img-thumb";
-      img.alt = label + " 안내 이미지";
-      img.style.display = "none";
-      img.addEventListener("click", function () { openViewer(img.src, label); });
-
-      img.onload = function () {
-        loading.style.display = "none";
-        err.style.display = "none";
-        img.style.display = "block";
-        tools.style.display = "grid";
-      };
-      img.onerror = function () {
-        loading.style.display = "none";
-        img.style.display = "none";
-        err.style.display = "flex";
-        tools.style.display = "none";
-      };
-      eRetry.addEventListener("click", function () {
-        err.style.display = "none";
-        loading.style.display = "flex";
-        img.src = src + "?t=" + Date.now();
+      img.addEventListener("load", function () {
+        loading.hidden = true; error.hidden = true; hit.hidden = false;
       });
-
-      frame.appendChild(loading);
-      frame.appendChild(img);
-      frame.appendChild(err);
-
-      // 보조 버튼
-      const tools = document.createElement("div");
-      tools.className = "img-tools";
-      tools.style.display = "none";
-
-      const zoomBtn = document.createElement("button");
-      zoomBtn.type = "button";
-      zoomBtn.className = "img-tool";
-      zoomBtn.innerHTML = '<span aria-hidden="true">🔍</span><span>전체화면으로 크게 보기</span>';
-      zoomBtn.addEventListener("click", function () { openViewer(img.src, label); });
-
-      const newTab = document.createElement("a");
-      newTab.className = "img-tool";
-      newTab.href = src;
-      newTab.target = "_blank";
-      newTab.rel = "noopener noreferrer";
-      newTab.innerHTML = '<span aria-hidden="true">↗</span><span>새 창에서 원본 열기</span>';
-
-      tools.appendChild(zoomBtn);
-      tools.appendChild(newTab);
-
-      box.appendChild(frame);
-      box.appendChild(tools);
-
+      img.addEventListener("error", function () {
+        loading.hidden = true; hit.hidden = true; error.hidden = false;
+        box.querySelector(".err-text").textContent = navigator.onLine ? "이미지 준비 중" : "오프라인 상태입니다";
+      });
+      box.querySelector(".err-retry").addEventListener("click", function () {
+        error.hidden = true; loading.hidden = false;
+        img.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now();
+      });
       img.src = src;
-      if (img.complete && img.naturalWidth > 0) {
-        loading.style.display = "none";
-        img.style.display = "block";
-        tools.style.display = "grid";
-      }
-
-      return box;
-    }
-
-    /* =========================================================
-     * 단계 이동
-     * ======================================================= */
-    function setStage(stage) {
-      if (stage === 2) visitedStage2 = true;
-
-      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
-      document.getElementById("screen-" + stage).classList.add("active");
-
-      for (let i = 1; i <= 2; i++) {
-        const el = document.getElementById("stage-" + i);
-        el.classList.remove("active", "done");
-        el.removeAttribute("aria-current");
-        if (i < stage) el.classList.add("done");
-        if (i === stage) { el.classList.add("active"); el.setAttribute("aria-current", "step"); }
-      }
-      updateStageAccess();
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      const title = document.getElementById("title-" + stage);
-      if (title) title.focus({ preventScroll: true });
-    }
-
-    function updateStageAccess() {
-      const el = document.getElementById("stage-2");
-      if (visitedStage2 && currentUnit) {
-        el.classList.remove("disabled");
-        el.removeAttribute("aria-disabled");
-      } else {
-        el.classList.add("disabled");
-        el.setAttribute("aria-disabled", "true");
-      }
-    }
-
-    function goStage(stage) {
-      if (stage === 1) {
-        visitedStage2 = false;
-        currentUnit = null;
-        openCatKey = null;
-        setStage(1);
-        return;
-      }
-      if (!visitedStage2 || !currentUnit) return;
-      setStage(2);
-    }
-
-    /* =========================================================
-     * 전체화면 이미지 뷰어 (핀치 줌 / 더블탭 / 드래그 이동)
-     * ======================================================= */
-    const viewer = document.getElementById("viewer");
-    const vStage = document.getElementById("viewer-stage");
-    const vImg = document.getElementById("viewer-img");
-    const vTitle = document.getElementById("viewer-title");
-    const vHint = document.getElementById("viewer-hint");
-
-    const MIN_SCALE = 1, MAX_SCALE = 8;
-    let scale = 1, tx = 0, ty = 0;
-    const pointers = new Map();
-    let startDist = 0, startScale = 1, startMid = { x: 0, y: 0 }, startTx = 0, startTy = 0;
-    let lastTapTime = 0, lastTapX = 0, lastTapY = 0, moved = false;
-    let lastFocused = null;
-    let hintTimer = null;
-
-    function applyTransform() {
-      vImg.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
-    }
-
-    function clampPan() {
-      const r = vStage.getBoundingClientRect();
-      const w = vImg.clientWidth * scale;
-      const h = vImg.clientHeight * scale;
-      const maxX = Math.max(0, (w - r.width) / 2);
-      const maxY = Math.max(0, (h - r.height) / 2);
-      tx = Math.min(maxX, Math.max(-maxX, tx));
-      ty = Math.min(maxY, Math.max(-maxY, ty));
-    }
-
-    function zoomTo(next, cx, cy) {
-      const r = vStage.getBoundingClientRect();
-      const ox = (cx === undefined ? r.width / 2 + r.left : cx) - r.left - r.width / 2;
-      const oy = (cy === undefined ? r.height / 2 + r.top : cy) - r.top - r.height / 2;
-      const prev = scale;
-      scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, next));
-      const k = scale / prev;
-      tx = ox - (ox - tx) * k;
-      ty = oy - (oy - ty) * k;
-      clampPan();
-      applyTransform();
-    }
-
-    function resetZoom() { scale = 1; tx = 0; ty = 0; applyTransform(); }
-
-    // 세로로 긴 이미지는 처음부터 화면 폭에 맞춰 크게 보여준다 (글자 가독성)
-    function fitToWidth() {
-      const r = vStage.getBoundingClientRect();
-      const w = vImg.clientWidth;
-      if (!w || !r.width) return;
-      const k = r.width / w;
-      if (k > 1.05) { scale = Math.min(MAX_SCALE, k); tx = 0; ty = 0; clampPan(); applyTransform(); }
-    }
-
-    vImg.addEventListener("load", function () {
-      resetZoom();
-      window.requestAnimationFrame(fitToWidth);
     });
+    // 공정 지도 파일을 못 불러오면 안내 표시
+    root.querySelectorAll(".evac").forEach(function (box) {
+      const img = box.querySelector(".evac-open img");
+      if (!img) return;
+      function fail() {
+        box.querySelector(".evac-scroll").hidden = true;
+        box.querySelector(".evac-bar").hidden = true;
+        box.querySelector(".evac-error").hidden = false;
+        box.querySelector(".err-text").textContent = navigator.onLine ? "공정 지도 준비 중" : "오프라인 상태입니다";
+      }
+      if (img.complete && !img.naturalWidth) fail();
+      else img.addEventListener("error", fail);
+    });
+  }
 
-    function openViewer(src, label) {
+  /* =====================================================================
+   * 8. 전체화면 이미지 창 (핀치 줌 · 두 번 탭 · 드래그 이동 · 뒤로가기로 닫기)
+   *    공정 지도는 원형 버튼과 함께 열림 → 버튼을 누르면 사진이 지도 위에 겹쳐 열리고,
+   *    '닫기' 또는 휴대폰 '뒤로'를 누르면 보던 확대 상태 그대로 지도로 돌아옴
+   * =================================================================== */
+  const viewer = $("#viewer"), vStage = $("#viewer-stage"), vCanvas = $("#viewer-canvas"), vImg = $("#viewer-img");
+  const vPins = $("#viewer-pins"), vSpin = $("#viewer-spin");
+  const vTitle = $("#viewer-title"), vHint = $("#viewer-hint"), vMsg = $("#viewer-msg"), vExt = $("#v-ext");
+  $("#v-in").innerHTML = svg("plus", 22);
+  $("#v-out").innerHTML = svg("minus", 22);
+  vExt.insertAdjacentHTML("afterbegin", svg("ext", 16));
+
+  const MIN_SCALE = 1, MAX_SCALE = 8;
+  let scale = 1, tx = 0, ty = 0;
+  const pointers = new Map();
+  let pinch = null, pan = null;
+  let moved = false, downOnImage = false, downOnPin = false, multiTouch = false;
+  let lastTapTime = 0, lastTapX = 0, lastTapY = 0;
+  let viewerOpen = false, lastFocused = null, hintTimer = null;
+  const vStack = [];         // 열린 창 순서 (예: [공정 지도, 비상대피로 사진])
+  let pendingZoom = null;    // 지도로 돌아올 때 되살릴 확대 상태
+
+  function applyTransform() {
+    vCanvas.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
+    vCanvas.style.setProperty("--k", String(1 / scale));   // 원형 버튼은 확대해도 같은 크기로
+  }
+  function clampPan() {
+    const r = vStage.getBoundingClientRect();
+    const maxX = Math.max(0, (vCanvas.offsetWidth * scale - r.width) / 2);
+    const maxY = Math.max(0, (vCanvas.offsetHeight * scale - r.height) / 2);
+    tx = Math.min(maxX, Math.max(-maxX, tx));
+    ty = Math.min(maxY, Math.max(-maxY, ty));
+  }
+  // 이미지를 화면 안에 들어가는 크기로 (원본보다 크게 늘리지는 않음)
+  function layoutCanvas() {
+    const r = vStage.getBoundingClientRect();
+    const w = vImg.naturalWidth, h = vImg.naturalHeight;
+    if (!w || !h || !r.width || !r.height) return;
+    const k = Math.min(1, r.width / w, r.height / h);
+    vCanvas.style.width = (w * k) + "px";
+    vCanvas.style.height = (h * k) + "px";
+  }
+  // 화면 좌표 → 무대 중심 기준 좌표
+  function toCenter(x, y) {
+    const r = vStage.getBoundingClientRect();
+    return { x: x - r.left - r.width / 2, y: y - r.top - r.height / 2 };
+  }
+  function zoomTo(next, cx, cy) {
+    const r = vStage.getBoundingClientRect();
+    const c = toCenter(cx === undefined ? r.left + r.width / 2 : cx, cy === undefined ? r.top + r.height / 2 : cy);
+    const prev = scale;
+    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, next));
+    const k = scale / prev;
+    tx = c.x - (c.x - tx) * k;
+    ty = c.y - (c.y - ty) * k;
+    clampPan(); applyTransform();
+  }
+  function resetZoom() { scale = 1; tx = 0; ty = 0; applyTransform(); }
+  // 세로로 긴 안내문은 처음부터 화면 폭에 맞춰 크게 (글자 가독성)
+  function fitToWidth() {
+    const r = vStage.getBoundingClientRect();
+    const w = vCanvas.offsetWidth;
+    if (!w || !r.width) return;
+    const k = r.width / w;
+    if (k > 1.05) {
+      scale = Math.min(MAX_SCALE, k); tx = 0; ty = 0; clampPan();
+      ty = (vCanvas.offsetHeight * scale - r.height) / 2;   // 맨 위부터 보이도록
+      clampPan(); applyTransform();
+    }
+  }
+
+  function afterLoad() {
+    vSpin.hidden = true; vMsg.hidden = true; vCanvas.hidden = false;
+    layoutCanvas();
+    if (pendingZoom) {
+      scale = pendingZoom.scale; tx = pendingZoom.tx; ty = pendingZoom.ty; pendingZoom = null;
+      clampPan(); applyTransform();
+    } else {
+      resetZoom(); window.requestAnimationFrame(fitToWidth);
+    }
+  }
+  vImg.addEventListener("load", afterLoad);
+  vImg.addEventListener("error", function () { vSpin.hidden = true; vCanvas.hidden = true; vMsg.hidden = false; });
+
+  // 창 하나의 내용 표시 (en = { src, label, pins, zoom })
+  function showEntry(en) {
+    vTitle.textContent = en.label;
+    vImg.alt = en.pins ? en.label + " 지도" : en.label + " 확대 이미지";
+    vExt.href = en.src;
+    vPins.innerHTML = en.pins ? pinButtons(en.pins, "data-vpin") : "";
+    vHint.textContent = en.pins && en.pins.length
+      ? "번호 버튼을 누르면 사진이 열립니다 · 두 손가락으로 확대"
+      : "두 손가락으로 확대 · 두 번 탭하면 확대/축소";
+    pendingZoom = en.zoom || null; en.zoom = null;
+    lastTapTime = 0;
+    vMsg.hidden = true;
+    if (vImg.getAttribute("src") === en.src && vImg.complete && vImg.naturalWidth) {
+      afterLoad();
+    } else {
+      vCanvas.hidden = true; vSpin.hidden = false;
+      vImg.src = en.src;
+    }
+    vHint.classList.remove("gone");
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function () { vHint.classList.add("gone"); }, 2600);
+  }
+  function openViewer(src, label, pins) {
+    if (!viewerOpen) {
       lastFocused = document.activeElement;
-      vImg.src = src;
-      vImg.alt = label + " 확대 이미지";
-      vTitle.textContent = label;
-      resetZoom();
-      viewer.classList.add("show");
+      viewer.hidden = false; viewerOpen = true;
       document.body.classList.add("no-scroll");
-      if (vImg.complete && vImg.naturalWidth > 0) window.requestAnimationFrame(fitToWidth);
-      vHint.classList.remove("gone");
-      if (hintTimer) clearTimeout(hintTimer);
-      hintTimer = setTimeout(function () { vHint.classList.add("gone"); }, 2600);
-      document.getElementById("viewer-close").focus();
+    } else if (vStack.length) {
+      vStack[vStack.length - 1].zoom = { scale: scale, tx: tx, ty: ty };   // 돌아올 때 그대로 보이도록
     }
+    vStack.push({ src: src, label: label, pins: pins || null, zoom: null });
+    showEntry(vStack[vStack.length - 1]);
+    $("#v-close").focus();
+    const st = hstate();
+    if (!memMode) tryHistory(function () { history.pushState(Object.assign({}, st, { viewer: vStack.length, depth: (st.depth || 0) + 1 }), ""); });
+  }
+  // 창을 n 개만 남기고 닫음 (0 이면 모두 닫기)
+  function closeViewerTo(n) {
+    if (vStack.length > n) vStack.length = n;
+    if (vStack.length) { showEntry(vStack[vStack.length - 1]); $("#v-close").focus(); }
+    else hideViewer();
+  }
+  function hideViewer() {
+    viewer.hidden = true; viewerOpen = false; vStack.length = 0;
+    document.body.classList.remove("no-scroll");
+    pointers.clear(); pinch = null; pan = null;
+    vCanvas.classList.remove("moving");
+    vPins.innerHTML = "";
+    if (lastFocused && document.contains(lastFocused)) lastFocused.focus({ preventScroll: true });
+    lastFocused = null;
+  }
+  function closeViewer() {
+    if (!memMode && hstate().viewer) history.back(); else closeViewerTo(vStack.length - 1);
+  }
 
-    function closeViewer() {
-      viewer.classList.remove("show");
-      document.body.classList.remove("no-scroll");
-      pointers.clear();
-      if (lastFocused) { lastFocused.focus(); lastFocused = null; }
+  vStage.addEventListener("pointerdown", function (e) {
+    if (!viewerOpen) return;
+    const onPin = !!e.target.closest(".pin");
+    // 원형 버튼 위에서는 포인터를 가로채지 않음 → 버튼 누르기가 그대로 동작
+    if (!onPin) { try { vStage.setPointerCapture(e.pointerId); } catch (err) { /* 무시 */ } }
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 1) { moved = false; multiTouch = false; downOnPin = onPin; downOnImage = vCanvas.contains(e.target); }
+    const pts = Array.from(pointers.values());
+    if (pts.length === 2) {
+      multiTouch = true; pan = null;
+      const mx = (pts[0].x + pts[1].x) / 2, my = (pts[0].y + pts[1].y) / 2;
+      pinch = { dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), scale: scale, tx: tx, ty: ty, mid: toCenter(mx, my) };
+    } else if (pts.length === 1) {
+      pan = { x: e.clientX, y: e.clientY, tx: tx, ty: ty };
     }
+  });
 
-    function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-    function mid(a, b) { return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+  vStage.addEventListener("pointermove", function (e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const pts = Array.from(pointers.values());
+    if (pts.length >= 2 && pinch && pinch.dist > 0) {
+      moved = true;
+      vCanvas.classList.add("moving");
+      const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const m = toCenter((pts[0].x + pts[1].x) / 2, (pts[0].y + pts[1].y) / 2);
+      const s = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.scale * d / pinch.dist));
+      const qx = (pinch.mid.x - pinch.tx) / pinch.scale, qy = (pinch.mid.y - pinch.ty) / pinch.scale;
+      scale = s; tx = m.x - s * qx; ty = m.y - s * qy;
+      clampPan(); applyTransform();
+    } else if (pts.length === 1 && pan) {
+      const dx = e.clientX - pan.x, dy = e.clientY - pan.y;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
+      if (moved && scale > 1) {
+        vCanvas.classList.add("moving");
+        tx = pan.tx + dx; ty = pan.ty + dy; clampPan(); applyTransform();
+      }
+    }
+  });
 
-    vStage.addEventListener("pointerdown", function (e) {
-      if (e.target === vStage && scale === 1) { /* 배경 탭은 아래 pointerup에서 처리 */ }
-      vStage.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      moved = false;
-      const pts = Array.from(pointers.values());
-      if (pts.length === 2) {
-        startDist = dist(pts[0], pts[1]);
-        startScale = scale;
-        startMid = mid(pts[0], pts[1]);
+  function endPointer(e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.delete(e.pointerId);
+    const pts = Array.from(pointers.values());
+    if (pts.length === 1) {
+      pinch = null;
+      pan = { x: pts[0].x, y: pts[0].y, tx: tx, ty: ty };
+      return;
+    }
+    if (pts.length > 0) return;
+    pinch = null; pan = null;
+    vCanvas.classList.remove("moving");                    // 손을 떼면 선명하게 다시 그림
+    if (moved || multiTouch || e.type === "pointercancel" || downOnPin) return;   // 원형 버튼은 click 으로 처리
+    const now = Date.now();
+    const near = Math.abs(e.clientX - lastTapX) < 30 && Math.abs(e.clientY - lastTapY) < 30;
+    if (now - lastTapTime < 320 && near) {                 // 두 번 탭 → 확대/축소
+      if (scale > 1.2) resetZoom(); else zoomTo(2.6, e.clientX, e.clientY);
+      lastTapTime = 0;
+    } else {
+      lastTapTime = now; lastTapX = e.clientX; lastTapY = e.clientY;
+      if (!downOnImage && scale === 1) closeViewer();     // 이미지 바깥 한 번 탭 → 닫기
+    }
+  }
+  vStage.addEventListener("pointerup", endPointer);
+  vStage.addEventListener("pointercancel", endPointer);
+  window.addEventListener("pointerup", endPointer);       // 버튼 위에서 시작해 창 밖에서 뗀 경우
+  window.addEventListener("pointercancel", endPointer);
+  vStage.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    zoomTo(scale * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY);
+  }, { passive: false });
+
+  // 전체화면 지도의 원형 버튼 → 사진 열기 (끌어서 움직인 경우는 제외)
+  vPins.addEventListener("click", function (e) {
+    const b = e.target.closest("[data-vpin]");
+    if (!b || (moved && e.detail !== 0)) return;
+    const en = vStack[vStack.length - 1];
+    const p = en && en.pins ? en.pins[Number(b.getAttribute("data-vpin"))] : null;
+    if (p) openPin(p);
+  });
+
+  window.addEventListener("resize", function () {
+    if (!viewerOpen || vCanvas.hidden) return;
+    layoutCanvas(); clampPan(); applyTransform();
+  });
+
+  $("#v-in").addEventListener("click", function () { zoomTo(scale * 1.5); });
+  $("#v-out").addEventListener("click", function () { zoomTo(scale / 1.5); });
+  $("#v-reset").addEventListener("click", resetZoom);
+  $("#v-close").addEventListener("click", closeViewer);
+  window.addEventListener("keydown", function (e) {
+    if (!viewerOpen) return;
+    if (e.key === "Escape") closeViewer();
+    else if (e.key === "+" || e.key === "=") zoomTo(scale * 1.5);
+    else if (e.key === "-") zoomTo(scale / 1.5);
+    else if (e.key === "0") resetZoom();
+  });
+
+  /* =====================================================================
+   * 9. 온라인 상태
+   * =================================================================== */
+  $("#offline-toast").innerHTML = svg("alert", 20) + "<span>오프라인 상태입니다</span>";
+  function updateOnline() { document.body.classList.toggle("offline", !navigator.onLine); }
+  window.addEventListener("online", updateOnline);
+  window.addEventListener("offline", updateOnline);
+
+  /* =====================================================================
+   * 10. 위치 확인 게이트
+   *     ※ 브라우저에서 확인하는 방식이므로 '이용 범위 안내' 수준의 제한입니다.
+   * =================================================================== */
+  const ACCESS_KEY = "ssc-safety-access";
+
+  function pointInPolygon(lat, lng, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i].lng, yi = poly[i].lat, xj = poly[j].lng, yj = poly[j].lat;
+      if (((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside;
+    }
+    return inside;
+  }
+  function distanceToPolygonMeters(lat, lng, poly) {
+    const R = 6378137, rad = Math.PI / 180;
+    const mLat = R * rad, mLng = R * rad * Math.cos(lat * rad);
+    const px = lng * mLng, py = lat * mLat;
+    let min = Infinity;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const ax = poly[j].lng * mLng, ay = poly[j].lat * mLat;
+      const bx = poly[i].lng * mLng, by = poly[i].lat * mLat;
+      const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
+      let t = len2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      min = Math.min(min, Math.hypot(px - (ax + t * dx), py - (ay + t * dy)));
+    }
+    return min;
+  }
+  function isWithinFence(lat, lng) {
+    return pointInPolygon(lat, lng, GEOFENCE) || distanceToPolygonMeters(lat, lng, GEOFENCE) <= BUFFER_METERS;
+  }
+
+  function setGate(state, o) {
+    o = o || {};
+    $("#gate-spinner").hidden = state !== "checking";
+    const icon = $("#gate-icon");
+    icon.hidden = state === "checking";
+    icon.className = "gate-icon" + (o.tone ? " " + o.tone : "");
+    icon.innerHTML = o.icon ? svg(o.icon, 32) : "";
+    $("#gate-title").textContent = o.title || "";
+    const desc = $("#gate-desc");
+    desc.innerHTML = o.desc || "";
+    desc.hidden = !o.desc;
+    const btn = $("#gate-btn");
+    btn.hidden = !o.btnText;
+    btn.textContent = o.btnText || "";
+  }
+
+  function hasRecentAccess() {
+    try {
+      const t = Number(sessionStorage.getItem(ACCESS_KEY));
+      return t > 0 && Date.now() - t < ACCESS_KEEP_MIN * 60000;
+    } catch (e) { return false; }
+  }
+  function grantAccess(remember) {
+    if (remember) { try { sessionStorage.setItem(ACCESS_KEY, String(Date.now())); } catch (e) { /* 무시 */ } }
+    document.body.classList.add("access-granted");
+    $("#gate").hidden = true;
+    fitUnitRows();
+    view.classList.remove("enter"); void view.offsetWidth; view.classList.add("enter");
+    const h = view.querySelector("[data-focus]");
+    if (h) h.focus({ preventScroll: true });
+  }
+
+  function checkLocation() {
+    if (!("geolocation" in navigator)) {
+      setGate("error", { icon: "alert", tone: "deny", title: "위치를 확인할 수 없습니다",
+        desc: "위치 기능을 지원하지 않는 기기 또는 브라우저입니다." });
+      return;
+    }
+    if (window.isSecureContext === false) {
+      setGate("error", { icon: "alert", tone: "wait", title: "보안 연결이 필요합니다",
+        desc: "https 주소로 접속해 주세요." });
+      return;
+    }
+    setGate("checking", { title: "위치 확인 중" });
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      if (isWithinFence(pos.coords.latitude, pos.coords.longitude)) {
+        grantAccess(true);
       } else {
-        startMid = { x: e.clientX, y: e.clientY };
-      }
-      startTx = tx; startTy = ty;
-    });
-
-    vStage.addEventListener("pointermove", function (e) {
-      if (!pointers.has(e.pointerId)) return;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      const pts = Array.from(pointers.values());
-
-      if (pts.length >= 2 && startDist > 0) {
-        moved = true;
-        const d = dist(pts[0], pts[1]);
-        const m = mid(pts[0], pts[1]);
-        tx = startTx + (m.x - startMid.x);
-        ty = startTy + (m.y - startMid.y);
-        zoomTo(startScale * (d / startDist), m.x, m.y);
-      } else if (pts.length === 1) {
-        const dx = e.clientX - startMid.x;
-        const dy = e.clientY - startMid.y;
-        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
-        if (scale > 1) {
-          tx = startTx + dx;
-          ty = startTy + dy;
-          clampPan();
-          applyTransform();
-        }
-      }
-    });
-
-    function endPointer(e) {
-      pointers.delete(e.pointerId);
-      const pts = Array.from(pointers.values());
-      if (pts.length === 1) {
-        startMid = { x: pts[0].x, y: pts[0].y };
-        startTx = tx; startTy = ty; startDist = 0;
-      } else if (pts.length === 0) {
-        startDist = 0;
-        // 더블탭 판정
-        if (!moved) {
-          const now = Date.now();
-          const near = Math.abs(e.clientX - lastTapX) < 30 && Math.abs(e.clientY - lastTapY) < 30;
-          if (now - lastTapTime < 320 && near) {
-            zoomTo(scale > 1.2 ? 1 : 2.6, e.clientX, e.clientY);
-            if (scale === 1) resetZoom();
-            lastTapTime = 0;
-          } else {
-            lastTapTime = now; lastTapX = e.clientX; lastTapY = e.clientY;
-            // 배경(이미지 바깥) 단일 탭 → 닫기
-            if (e.target === vStage && scale === 1) closeViewer();
-          }
-        }
-      }
-    }
-    vStage.addEventListener("pointerup", endPointer);
-    vStage.addEventListener("pointercancel", endPointer);
-
-    vStage.addEventListener("wheel", function (e) {
-      e.preventDefault();
-      zoomTo(scale * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY);
-    }, { passive: false });
-
-    document.getElementById("v-in").addEventListener("click", function () { zoomTo(scale * 1.5); });
-    document.getElementById("v-out").addEventListener("click", function () { zoomTo(scale / 1.5); });
-    document.getElementById("v-reset").addEventListener("click", resetZoom);
-    document.getElementById("viewer-close").addEventListener("click", closeViewer);
-
-    window.addEventListener("keydown", function (e) {
-      if (!viewer.classList.contains("show")) return;
-      if (e.key === "Escape") { closeViewer(); return; }
-      if (e.key === "+" || e.key === "=") { zoomTo(scale * 1.5); }
-      if (e.key === "-") { zoomTo(scale / 1.5); }
-      if (e.key === "0") { resetZoom(); }
-    });
-
-    /* =========================================================
-     * 온라인 상태
-     * ======================================================= */
-    function updateOnlineStatus() { document.body.classList.toggle("offline", !navigator.onLine); }
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-
-    /* =========================================================
-     * GPS 접근 게이트
-     * ======================================================= */
-    function pointInPolygon(lat, lng, poly) {
-      let inside = false;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const xi = poly[i].lng, yi = poly[i].lat;
-        const xj = poly[j].lng, yj = poly[j].lat;
-        const intersect = ((yi > lat) !== (yj > lat)) &&
-          (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-      }
-      return inside;
-    }
-
-    function distanceToPolygonMeters(lat, lng, poly) {
-      const R = 6378137, rad = Math.PI / 180;
-      const mPerLat = R * rad, mPerLng = R * rad * Math.cos(lat * rad);
-      const px = lng * mPerLng, py = lat * mPerLat;
-      let min = Infinity;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const ax = poly[j].lng * mPerLng, ay = poly[j].lat * mPerLat;
-        const bx = poly[i].lng * mPerLng, by = poly[i].lat * mPerLat;
-        const dx = bx - ax, dy = by - ay;
-        const len2 = dx * dx + dy * dy;
-        let t = len2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / len2;
-        t = Math.max(0, Math.min(1, t));
-        const d = Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-        if (d < min) min = d;
-      }
-      return min;
-    }
-
-    function isWithinFence(lat, lng) {
-      if (pointInPolygon(lat, lng, GEOFENCE)) return true;
-      return distanceToPolygonMeters(lat, lng, GEOFENCE) <= BUFFER_METERS;
-    }
-
-    function setGate(state, opts) {
-      opts = opts || {};
-      const spinner = document.getElementById("gate-spinner");
-      const icon = document.getElementById("gate-icon");
-      const title = document.getElementById("gate-title");
-      const desc = document.getElementById("gate-desc");
-      const btn = document.getElementById("gate-btn");
-      const sub = document.getElementById("gate-sub");
-
-      spinner.style.display = state === "checking" ? "block" : "none";
-      icon.style.display = state === "checking" ? "none" : "flex";
-      btn.style.display = opts.showBtn ? "block" : "none";
-      icon.className = "gate-icon" + (opts.iconClass ? " " + opts.iconClass : "");
-
-      if (opts.icon) icon.textContent = opts.icon;
-      title.textContent = opts.title || "";
-      desc.innerHTML = opts.desc || "";
-      sub.textContent = opts.sub || "";
-      if (opts.btnText) btn.textContent = opts.btnText;
-    }
-
-    function grantAccess() {
-      document.body.classList.add("access-granted");
-      document.getElementById("gate").classList.add("hidden");
-    }
-
-    function requestLocation() {
-      if (!("geolocation" in navigator)) {
-        setGate("error", {
-          icon: "⚠️", iconClass: "deny",
-          title: "위치를 확인할 수 없습니다",
-          desc: "이 기기 또는 브라우저는 위치 기능을 지원하지 않습니다.<br>위치 확인이 가능한 환경에서 다시 접속해 주세요.",
-          showBtn: false
+        setGate("deny", {
+          icon: "ban", tone: "deny", title: "접근 구역이 아닙니다",
+          desc: "이 안내는 <b>공장 구역</b>에서, <b>관계자에 한하여</b> 이용할 수 있습니다.",
+          btnText: "다시 시도"
         });
-        return;
       }
+    }, function (err) {
+      let msg;
+      if (err.code === 1) msg = "브라우저 설정에서 위치 권한을 허용해 주세요.";
+      else if (err.code === 2) msg = "GPS 신호를 찾을 수 없습니다.";
+      else msg = "위치 확인 시간이 초과되었습니다.";
+      setGate("error", { icon: "pin", tone: "wait", title: "위치 확인이 필요합니다", desc: msg, btnText: "다시 시도" });
+    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+  }
+  $("#gate-btn").addEventListener("click", checkLocation);
 
-      setGate("checking", {
-        title: "위치 확인 중",
-        desc: "공장 구역 내에서만 이용할 수 있습니다.<br>위치를 확인하고 있습니다…"
-      });
+  /* =====================================================================
+   * 11. 시작
+   * =================================================================== */
+  (function start() {
+    // QR 바로가기: index.html?u=tdm12 → 해당 공정 화면
+    let startHash = location.hash, qs = "";
+    try {
+      const params = new URLSearchParams(location.search);
+      const u = params.get("u");
+      if (u && UNIT_BY_ID[u] && (!startHash || startHash === "#" || startHash === "#/")) startHash = "#/u/" + u;
+      params.delete("u");
+      qs = params.toString();
+    } catch (e) { /* 무시 */ }
+    const ok = tryHistory(function () {
+      history.replaceState(Object.assign({ depth: 0 }, hstate()), "",
+        location.pathname + (qs ? "?" + qs : "") + (startHash || "#/"));
+    });
+    if (!ok) { memMode = true; memHash = startHash || "#/"; }
+    try { history.scrollRestoration = "manual"; } catch (e) { /* 무시 */ }
 
-      navigator.geolocation.getCurrentPosition(
-        function (pos) {
-          if (isWithinFence(pos.coords.latitude, pos.coords.longitude)) {
-            grantAccess();
-          } else {
-            setGate("deny", {
-              icon: "⛔", iconClass: "deny",
-              title: "접근 구역이 아닙니다",
-              desc: "이 안내는 <b>공장 구역 내</b>에서만 이용할 수 있습니다.<br>현장으로 이동한 뒤 다시 시도해 주세요.",
-              showBtn: true, btnText: "다시 시도"
-            });
-          }
-        },
-        function (err) {
-          let msg;
-          if (err.code === 1) {
-            msg = "위치 권한이 거부되었습니다.<br>브라우저 설정에서 위치 권한을 허용한 뒤 다시 시도해 주세요.";
-          } else if (err.code === 2) {
-            msg = "위치를 확인할 수 없습니다.<br>실내에서는 GPS 신호가 약할 수 있으니, 창가나 야외로 이동 후 다시 시도해 주세요.";
-          } else {
-            msg = "위치 확인 시간이 초과되었습니다.<br>다시 시도해 주세요.";
-          }
-          setGate("error", {
-            icon: "📡", iconClass: "wait",
-            title: "위치 확인이 필요합니다",
-            desc: msg, showBtn: true, btnText: "위치 권한 허용하고 다시 시도"
-          });
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
+    render({ restore: true });
+    updateOnline();
+
+    if (REVIEW_BYPASS) {
+      const b = $("#gate-bypass");
+      b.hidden = false;
+      b.addEventListener("click", function () { grantAccess(false); });
     }
-
-    /* =========================================================
-     * 시작
-     * ======================================================= */
-    buildUnits();
-    updateOnlineStatus();
-    updateStageAccess();
-    requestLocation();
+    if (hasRecentAccess()) grantAccess(false);
+    else checkLocation();
+  })();
   </script>
 </body>
 </html>
