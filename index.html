@@ -21,23 +21,27 @@
       tdm12 = #1, 2 TDM Unit    tdm3 = #3 TDM Unit    nomndm = NOM/NDM Unit
       nash  = NaSH Unit         li2s = Li2S Unit      lp1    = LP-1 Unit
 
+   ■ 파일 이름은 아래 이름 그대로 (소문자), 확장자는 .png .jpg .jpeg .webp 아무거나 가능
+      · 휴대폰 사진(HEIC)은 JPG로 바꿔서 올려야 함
+
    ■ 공정별 항목 (공정 코드마다 1장씩)
-      응급처치 방법                 {공정코드}-firstaid.png   예) tdm12-firstaid.png
-      취급 물질별 보호구 착용 기준    {공정코드}-ppe.png        예) tdm12-ppe.png
-      비상대피로 위치               {공정코드}-evac.png       예) tdm12-evac.png
+      응급처치 방법                 {공정코드}-aid     예) tdm12-aid.png
+      취급 물질별 보호구 착용 기준    {공정코드}-ppe     예) tdm12-ppe.png
+      비상대피로 위치               {공정코드}-exit    예) tdm12-exit.png
 
    ■ MSDS 요약 정보 (물질별 1장 — 같은 물질은 여러 공정이 같은 파일을 사용)
-      msds-h2s.png    msds-pt.png     msds-nom.png    msds-1-octene.png
-      msds-naoh.png   msds-nash.png   msds-lioh.png
+      h2s  pt  nom  octene  naoh  nash  lioh          예) h2s.png
 
    ■ 공통 항목
-      보호구 종류                    common-ppe-types.png
-      세안기, 보안경 보관함 위치       common-eyewash.png
-      공정 내 비상대피로 위치         evac-map.svg  (공장 배치도 — 확대해도 선명한 벡터 그림)
-                                     + 원형 버튼별 사진 evac-point-1.png, evac-point-2.png …
-                                     버튼 위치·이름·사진은 스크립트의 EVAC_MAP 에서 설정
+      보호구 종류                    ppe              예) ppe.png
+      세안기, 보안경 보관함 위치       eye              예) eye.png
+      공정 내 비상대피로 위치         배치도는 이 파일 안에 들어 있음 (별도 파일 없음)
+                                     지도 위 번호 버튼별 사진:
+                                       계단        stair1  ~ stair15      예) stair1.jpg
+                                       수직사다리   ladder1 ~ ladder10     예) ladder1.jpg
+                                     · 버튼 위치·위치 이름은 스크립트의 EVAC_POINTS 에서 수정
 
-   ■ 로고   logo.png  (없으면 글자 로고로 자동 대체)
+   ■ 로고   logo  (없으면 글자 로고로 자동 대체)
 
    ■ QR 바로가기 주소 — 공정 출입구 QR마다 해당 공정 화면이 바로 열림
       https://(사이트 주소)/index.html?u=tdm12      ← 끝의 공정 코드만 바꿔서 사용
@@ -403,74 +407,204 @@
       border: 1.5px solid var(--line); background: #fff; font-size: 14.5px; font-weight: 800;
     }
 
-    /* ================= 공정 내 비상대피로 지도 (녹색 핀) ================= */
-    .evac {
-      position: relative;
-      background: #fff; border: 1px solid var(--line); border-radius: 22px;
-      overflow: hidden; box-shadow: var(--sh-1);
+    /* ================= 공정 내 비상대피로 지도 =================
+       지도 높이 --H 를 기준으로 원형 버튼이 함께 커지고 작아짐 (--u = 지도 1칸의 화면 크기)
+       초록 = 계단 / 파랑 = 수직사다리 / 네모 테두리 = 계단실 안의 계단                         */
+    .evm {
+      --st: #15803d; --st-50: #eaf7ef; --st-ring: rgba(21,128,61,.32);
+      --ld: #2155d6; --ld-50: #edf2fd; --ld-ring: rgba(33,85,214,.32);
+      --room: #2a2340;
+      --H: 420px;
+      --H: clamp(400px, calc(100vh - 230px), 440px);
+      --H: clamp(400px, calc(100svh - 230px), 440px);
+      --u: calc(var(--H) / 525);
+      position: relative; overflow: hidden;
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--sh-1);
     }
-    .evac-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .evac-canvas { position: relative; min-width: 100%; }
-    .evac-open { display: block; width: 100%; margin: 0; padding: 0; border: 0; background: #f3f1f8; cursor: zoom-in; }
-    .evac-open img { display: block; width: 100%; height: auto; -webkit-user-drag: none; user-select: none; }
-    .evac-bar {
-      display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
-      min-height: 50px; margin: 0; padding: 0 14px; border: 0; border-top: 1px solid var(--line);
-      background: #fff; color: var(--g-800); font-size: 15.5px; font-weight: 800; letter-spacing: -.02em; cursor: pointer;
+    .evm-stage {
+      overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      padding: 46px 12px 12px; background: #f3f1f8;      /* 위쪽 46px = 범례 자리 (지도·원을 가리지 않게) */
     }
-    .evac-bar:active { background: var(--g-50); }
-    .evac-note { margin: 12px 4px 0; font-size: 14.5px; font-weight: 700; line-height: 1.55; color: var(--ink-2); }
-    .evac-error {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 10px; min-height: 220px; padding: 28px 20px; text-align: center; background: #fbfaff;
+    .evm-stage::-webkit-scrollbar { display: none; }
+    .evm-track { position: relative; width: calc(var(--H) * 2.862857); height: var(--H); }
+    .evm-board {
+      position: absolute; left: 0; top: 0; width: calc(var(--H) * 2.862857); height: var(--H);
+      transform-origin: 0 0; border-radius: calc(var(--u) * 10); background: #fff;
     }
+    .evm-board.pop { animation: evmPop .3s var(--ease); }
+    @keyframes evmPop { from { opacity: .2; } }
+    .evm-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border-radius: inherit; }
+
+    /* 지도 위 원형 버튼 */
+    .evm-pt {
+      position: absolute; z-index: 2;
+      width: calc(var(--u) * 44); height: calc(var(--u) * 44);
+      margin: calc(var(--u) * -22) 0 0 calc(var(--u) * -22); padding: 0;
+      display: grid; place-items: center; cursor: pointer;
+      border: calc(var(--u) * 3.4) solid #fff; border-radius: 50%;
+      color: #fff; font-size: calc(var(--u) * 20); font-weight: 800; line-height: 1; letter-spacing: -.04em;
+      box-shadow: 0 calc(var(--u) * 3) calc(var(--u) * 9) rgba(20,16,40,.34);
+      transition: transform .2s var(--ease), opacity .2s ease, box-shadow .2s ease;
+    }
+    .evm-pt.stair { background: var(--st); }
+    .evm-pt.ladder { background: var(--ld); }
+    .evm-pt::after { content: ""; position: absolute; inset: calc(var(--u) * -9); border-radius: 50%; }   /* 누르는 범위 넓힘 */
+    .evm-pt.room::before {
+      content: ""; position: absolute; left: 50%; top: 50%; z-index: -1; pointer-events: none; box-sizing: border-box;
+      width: calc(var(--u) * 24.4); height: calc(var(--u) * 24.4); margin: calc(var(--u) * -12.2) 0 0 calc(var(--u) * -12.2);
+      border: calc(var(--u) * 2.4) solid rgba(6, 36, 20, .42);
+    }
+    .evm-pt:active { transform: scale(.92); }
+    .evm.has-sel .evm-pt:not(.on) { opacity: .55; }
+    .evm-pt.on { z-index: 3; transform: scale(1.2); }
+    .evm-pt.on.stair { box-shadow: 0 0 0 calc(var(--u) * 5) var(--st-ring), 0 calc(var(--u) * 4) calc(var(--u) * 12) rgba(20,16,40,.4); }
+    .evm-pt.on.ladder { box-shadow: 0 0 0 calc(var(--u) * 5) var(--ld-ring), 0 calc(var(--u) * 4) calc(var(--u) * 12) rgba(20,16,40,.4); }
+    .evm-pt.on::after { border: calc(var(--u) * 3) solid currentColor; animation: evmPulse 1.6s ease-out infinite; }
+    .evm-pt.on.stair::after { color: var(--st); }
+    .evm-pt.on.ladder::after { color: var(--ld); }
+    @keyframes evmPulse { 0% { transform: scale(.7); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+
+    /* 범례 — 지도 카드 왼쪽 위에 고정 (지도를 좌우로 밀어도 그 자리 그대로)
+       지도 위쪽 여백에 있어 원·지도를 가리지 않음, 손가락으로 끌면 지도가 그대로 밀림 */
+    .evm-key {
+      position: absolute; left: 12px; top: 7px; z-index: 1; pointer-events: none;
+      display: flex; align-items: center; gap: 14px;
+      height: 32px; padding: 0 13px 0 7px;
+      background: rgba(255,255,255,.95); border: 1px solid #dcd8e7; border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(27,22,48,.10);
+      font-size: 15px; font-weight: 800; letter-spacing: -.03em; line-height: 1; color: var(--ink); white-space: nowrap;
+    }
+    .evm-key span { display: inline-flex; align-items: center; gap: 7px; }
+    .evm-key i {
+      flex: none; width: 20px; height: 20px; border-radius: 50%;
+      border: 2.5px solid #fff; box-shadow: 0 1px 4px rgba(20,16,40,.38);
+    }
+    .evm-key .stair i { background: var(--st); }
+    .evm-key .ladder i { background: var(--ld); }
+
+    /* 지도 위에 떠 있는 조작 버튼 (지도와 함께 밀리지 않음) */
+    .evm-fade {
+      position: absolute; top: 0; bottom: 0; width: 34px; z-index: 1; pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .evm-fade.l { left: 0; background: linear-gradient(90deg, rgba(243,241,248,.95), rgba(243,241,248,0)); }
+    .evm-fade.r { right: 0; background: linear-gradient(270deg, rgba(243,241,248,.95), rgba(243,241,248,0)); }
+    .evm-edge {
+      position: absolute; top: 50%; z-index: 5; margin-top: -22px;
+      width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 50%; cursor: pointer;
+      display: grid; place-items: center; background: rgba(255,255,255,.95); color: var(--ink);
+      box-shadow: 0 4px 14px rgba(27,22,48,.18);
+      transition: opacity .2s ease, transform .15s ease;
+    }
+    .evm-edge.l { left: 8px; }
+    .evm-edge.r { right: 8px; }
+    .evm-edge:active { transform: scale(.92); }
+    .evm-fab {
+      position: absolute; z-index: 1;             /* 원보다 아래 층 — 버튼이 원을 가리지 않게 */
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 14px 0 11px; border: 0; border-radius: 999px; cursor: pointer;
+      background: rgba(27,22,48,.84); color: #fff; font-size: 14px; font-weight: 800; letter-spacing: -.02em;
+      box-shadow: 0 6px 16px rgba(27,22,48,.25);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      transition: opacity .2s ease, transform .15s ease;
+    }
+    .evm-fab:active { transform: scale(.95); }
+    .evm-fab.fit { left: 10px; bottom: 10px; }
+    .evm.at-start .evm-fade.l, .evm.at-start .evm-edge.l,
+    .evm.at-end .evm-fade.r, .evm.at-end .evm-edge.r,
+    .evm.ov .evm-edge, .evm.ov .evm-fade { opacity: 0; pointer-events: none; }
+    .evm.ov .evm-stage { cursor: zoom-in; }
+    .evm.ov .evm-pt { pointer-events: none; }
+
+    /* 지도 아래 사진 창 */
+    .evp {
+      --c: #15803d; --c50: #eaf7ef;
+      margin-top: 12px; overflow: hidden;
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--sh-1);
+      animation: evpIn .35s var(--ease) backwards;
+    }
+    .evp.ladder { --c: #2155d6; --c50: #edf2fd; }
+    @keyframes evpIn { from { opacity: 0; transform: translateY(14px); } }
+    .evp-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 10px 12px 14px; border-top: 5px solid var(--c);
+    }
+    .evp-badge {
+      flex: none; width: 46px; height: 46px; border-radius: 50%;
+      display: grid; place-items: center; background: var(--c); color: #fff;
+      font-size: 20px; font-weight: 800; letter-spacing: -.04em;
+      box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--c);
+    }
+    .evp-badge.room { position: relative; isolation: isolate; }
+    .evp-badge.room::before {
+      content: ""; position: absolute; left: 50%; top: 50%; z-index: -1; box-sizing: border-box;
+      width: 26px; height: 26px; margin: -13px 0 0 -13px; border: 2.5px solid rgba(6, 36, 20, .42);
+    }
+    .evp-tt { flex: 1; min-width: 0; }
+    .evp-tt strong { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.03em; line-height: 1.22; color: var(--ink); }
+    .evp-tt strong span { white-space: nowrap; }
+    .evp-tt .evp-kind { color: var(--c); }
+    .evp-nav { flex: none; display: flex; align-items: center; gap: 6px; }
+    .evp-nav button {
+      width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 14px; cursor: pointer;
+      display: grid; place-items: center; background: #fff; color: var(--ink);
+    }
+    .evp-nav button:active { background: var(--c50); }
+    .evp-frame {
+      position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+      background: #f1eff6; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+    }
+    .evp-frame > img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; cursor: zoom-in;
+      -webkit-user-drag: none;
+    }
+    .evp-frame > img.from-r { animation: evpFromR .28s var(--ease) both; }
+    .evp-frame > img.from-l { animation: evpFromL .28s var(--ease) both; }
+    @keyframes evpFromR { from { opacity: 0; transform: translateX(26px); } }
+    @keyframes evpFromL { from { opacity: 0; transform: translateX(-26px); } }
+    .evp-zoom {
+      position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center; pointer-events: none;
+      background: rgba(27,22,48,.72); color: #fff;
+    }
+    .evp-wait { position: absolute; left: 50%; top: 50%; margin: -17px 0 0 -17px; width: 34px; height: 34px; border-width: 4px; }
+    .evp-empty {
+      position: absolute; inset: 0; padding: 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;
+      background-color: #fbfaff;
+      background-image: radial-gradient(circle, #e4e0ef 1.2px, transparent 1.3px); background-size: 18px 18px;
+    }
+    .evp-empty-ico {
+      width: 76px; height: 76px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--c); background: #fff;
+      border: 2px dashed var(--c);
+    }
+    .evp-empty p { margin: 0; font-size: 16px; font-weight: 800; color: var(--ink-2); }
+    .evp-empty code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12.5px;
+      color: var(--muted); background: #fff; border: 1px solid var(--line); padding: 3px 9px; border-radius: 7px;
+    }
+    @media (min-width: 640px) {
+      .evm { --H: clamp(380px, calc(100svh - 260px), 480px); }
+      .evp-frame { aspect-ratio: 16 / 10; }
+    }
+    @media (max-width: 359px) {
+      .evp-head { gap: 9px; padding-left: 10px; }
+      .evp-badge { width: 40px; height: 40px; font-size: 18px; }
+      .evp-tt strong { font-size: 17px; }
+      .evp-nav button { width: 40px; }
+    }
+
+    /* 전체화면 창의 원형 버튼 (공용) */
     .pin {
-      --pin: 44px;
+      --pin: 38px;
       position: absolute; z-index: 1;
       width: var(--pin); height: var(--pin); margin: calc(var(--pin) / -2) 0 0 calc(var(--pin) / -2); padding: 0;
       display: grid; place-items: center;
       border: 3px solid #fff; border-radius: 50%; cursor: pointer;
       background: var(--g-600); color: #fff; font-size: calc(var(--pin) * .4); font-weight: 800; line-height: 1;
       box-shadow: 0 4px 12px rgba(8,85,58,.35);
-    }
-    .evac .pin { --pin: 38px; }
-    @media (max-width: 520px) { .evac .pin { --pin: 30px; border-width: 2.5px; } }
-    .pin::before {
-      content: ""; position: absolute; inset: -7px; border-radius: 50%;
-      border: 2px solid var(--g-500); pointer-events: none;
-      animation: ring 2s ease-out infinite;
-    }
-    .pin:active { transform: scale(.92); }
-    @keyframes ring { 0% { transform: scale(.75); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
-    .evac-empty {
-      aspect-ratio: 4 / 3;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 12px; padding: 24px; text-align: center;
-      background-color: #fbfdfc;
-      background-image:
-        linear-gradient(#dcefe5 1px, transparent 1px),
-        linear-gradient(90deg, #dcefe5 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-    .evac-empty-ico {
-      width: 64px; height: 64px; border-radius: 20px;
-      display: grid; place-items: center;
-      background: #fff; color: var(--g-600); border: 1.5px dashed var(--g-500);
-    }
-    .evac-empty-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--g-800); }
-    .legend { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
-    .legend-btn {
-      display: flex; align-items: center; gap: 12px; width: 100%;
-      min-height: 58px; padding: 8px 12px 8px 12px; cursor: pointer; text-align: left;
-      border: 1px solid var(--line); border-radius: 16px; background: #fff;
-      font-size: 16px; font-weight: 800; letter-spacing: -.02em;
-    }
-    .legend-btn .t { flex: 1; min-width: 0; }
-    .pin-mini {
-      flex: none; width: 32px; height: 32px; margin: 2px; border-radius: 50%;
-      display: grid; place-items: center;
-      background: var(--g-600); color: #fff; font-size: 14px; font-weight: 800;
-      box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--g-600);
     }
 
     /* ================= 오프라인 알림 ================= */
@@ -617,19 +751,19 @@
    * 1. 설정 — 내용 변경은 대부분 이 영역에서만 하면 됩니다.
    * =================================================================== */
   const IMAGE_BASE = "./";          // 이미지 폴더. 예) "./images/"
-  const LOGO_SRC = "./logo.png";
+  const LOGO_NAME = "logo";
   const REVIEW_BYPASS = true;       // 검토용 숨은 버튼(위치 확인 화면 오른쪽 위). 배포 시 false
   const ACCESS_KEEP_MIN = 30;       // 위치 확인 후 같은 창에서 다시 묻지 않는 시간(분)
 
   // 취급 물질 (MSDS 요약 이미지는 물질별 1장)
   const SUBSTANCES = {
-    h2s:    { code: "H₂S",      label: "황화수소",          file: "msds-h2s.png" },
-    pt:     { code: "PT",       label: "프로필렌 테트라머",   file: "msds-pt.png" },
-    nom:    { code: "NOM",      label: "노말옥틸머캅탄",      file: "msds-nom.png" },
-    octene: { code: "1-Octene", label: "1-옥텐",            file: "msds-1-octene.png" },
-    naoh:   { code: "NaOH",     label: "수산화나트륨",        file: "msds-naoh.png" },
-    nash:   { code: "NaSH",     label: "황화수소나트륨",      file: "msds-nash.png" },
-    lioh:   { code: "LiOH",     label: "수산화리튬",         file: "msds-lioh.png" }
+    h2s:    { code: "H₂S",      label: "황화수소",          file: "h2s" },
+    pt:     { code: "PT",       label: "프로필렌 테트라머",   file: "pt" },
+    nom:    { code: "NOM",      label: "노말옥틸머캅탄",      file: "nom" },
+    octene: { code: "1-Octene", label: "1-옥텐",            file: "octene" },
+    naoh:   { code: "NaOH",     label: "수산화나트륨",        file: "naoh" },
+    nash:   { code: "NaSH",     label: "황화수소나트륨",      file: "nash" },
+    lioh:   { code: "LiOH",     label: "수산화리튬",         file: "lioh" }
   };
 
   // 공정 목록 (id = 이미지 파일명·QR 주소에 쓰이는 공정 코드, substances = MSDS 버튼 순서)
@@ -645,33 +779,51 @@
   // 공정별 항목 (보라) — file 의 {u} 는 공정 코드로 바뀜
   const UNIT_ITEMS = [
     { key: "msds",     type: "msds", icon: "msds", title: "MSDS 요약 정보" },
-    { key: "firstaid", icon: "firstaid", title: "응급처치 방법",             file: "{u}-firstaid.png" },
-    { key: "ppe",      icon: "worker",   title: "취급 물질별 보호구 착용 기준", file: "{u}-ppe.png" },
-    { key: "evac",     icon: "exit",     title: "비상대피로 위치",           file: "{u}-evac.png" }
+    { key: "firstaid", icon: "firstaid", title: "응급처치 방법",             file: "{u}-aid" },
+    { key: "ppe",      icon: "worker",   title: "취급 물질별 보호구 착용 기준", file: "{u}-ppe" },
+    { key: "evac",     icon: "exit",     title: "비상대피로 위치",           file: "{u}-exit" }
   ];
 
   // 공통 항목 (주황) — 모든 공정에 동일하게 적용
   const COMMON_ITEMS = [
-    { key: "ppe-types", icon: "gasmask", title: "보호구 종류",               file: "common-ppe-types.png" },
-    { key: "eyewash",   icon: "eyewash", title: "세안기, 보안경 보관함 위치",  file: "common-eyewash.png" },
+    { key: "ppe-types", icon: "gasmask", title: "보호구 종류",               file: "ppe" },
+    { key: "eyewash",   icon: "eyewash", title: "세안기, 보안경 보관함 위치",  file: "eye" },
     { key: "evac-map",  icon: "exit",    title: "공정 내 비상대피로 위치",     type: "map" }
   ];
 
-  // 공정 내 비상대피로 지도
-  //   image : 지도 파일명 (비어 있으면 '공정 지도 준비 중' 표시)
-  //   canvasWidth : 지도가 작아 버튼 누르기 어려우면 "160%" 등으로 늘림 → 좌우 스크롤
-  //   pins  : 지도 위 원형 버튼. 누르면 image 사진이 전체화면으로 열림
-  //           x, y  = 지도 기준 위치(%) — 왼쪽 위가 0,0 / 오른쪽 아래가 100,100
-  //           no    = 버튼 안 번호,  label = 버튼 이름(목록·사진 제목에 표시)
-  //   ※ 지도는 '지도 크게 보기'(전체화면)에서도 확대/이동되며, 원형 버튼도 함께 표시됨
-  const EVAC_MAP = {
-    image: "evac-map.svg",
-    canvasWidth: "100%",
-    pins: [   // 미리보기용 예시 버튼 2개 (위치·이름은 임시)
-      { no: 1, x: 55.5, y: 67.5, label: "TDM 동측 비상구 (예시)", image: "evac-point-1.png" },
-      { no: 2, x: 47.9, y: 28.0, label: "주차장 집결지 (예시)",   image: "evac-point-2.png" }
-    ]
-  };
+  // 공정 내 비상대피로 — 지도 위 번호 버튼
+  //   type : "stair" = 계단(초록) / "ladder" = 수직사다리(파랑)
+  //   no   : 버튼 번호      x, y : 지도 기준 위치(%) — 왼쪽 위 0,0 / 오른쪽 아래 100,100
+  //   at   : 가장 가까운 건물 이름 → 화면에는 "at + 계단/수직사다리" 로 표시 (예: #1 IPA Unit 수직사다리)
+  //   room : true = 계단실 안의 계단 → 원 안에 계단실 정사각형이 비쳐 보임 (정사각형은 지도 그림에 있음)
+  //   photo: 사진 파일명을 직접 정할 때만 적음 (없으면 stair1.jpg / ladder1.jpg 처럼 자동)
+  const EVAC_POINTS = [
+    { type: "stair", no: 1, x: 22.55, y: 4.10, at: "#1 IPA Unit" },
+    { type: "stair", no: 2, x: 23.52, y: 30.95, at: "#3 TDM Unit" },
+    { type: "stair", no: 3, x: 25.65, y: 12.86, at: "#3 TDM Comp" },
+    { type: "stair", no: 4, x: 43.88, y: 25.90, at: "NOM/NDM Unit" },
+    { type: "stair", no: 5, x: 50.00, y: 22.86, at: "NaSH Unit" },
+    { type: "stair", no: 6, x: 53.23, y: 30.95, at: "#1, 2 TDM Unit" },
+    { type: "stair", no: 7, x: 56.65, y: 18.57, at: "#1, 2 TDM Unit" },
+    { type: "stair", no: 8, x: 46.43, y: 76.89, at: "LP-1", room: true },
+    { type: "stair", no: 9, x: 57.33, y: 69.38, at: "LP-1", room: true },
+    { type: "stair", no: 10, x: 44.36, y: 93.99, at: "LP-1", room: true },
+    { type: "stair", no: 11, x: 57.33, y: 84.74, at: "LP-1", room: true },
+    { type: "stair", no: 12, x: 77.88, y: 70.48, at: "DP-2" },
+    { type: "stair", no: 13, x: 83.40, y: 76.86, at: "DP-2" },
+    { type: "stair", no: 14, x: 82.20, y: 58.95, at: "DP-1" },
+    { type: "stair", no: 15, x: 91.38, y: 58.95, at: "DP-1" },
+    { type: "ladder", no: 1, x: 19.06, y: 11.52, at: "#1 IPA Unit" },
+    { type: "ladder", no: 2, x: 19.13, y: 25.62, at: "#3 TDM Unit" },
+    { type: "ladder", no: 3, x: 26.38, y: 22.19, at: "#3 TDM Comp" },
+    { type: "ladder", no: 4, x: 35.36, y: 31.52, at: "NOM/NDM Unit" },
+    { type: "ladder", no: 5, x: 47.87, y: 15.52, at: "NaSH Unit" },
+    { type: "ladder", no: 6, x: 73.42, y: 79.52, at: "DP-2" },
+    { type: "ladder", no: 7, x: 88.26, y: 70.00, at: "DP-2" },
+    { type: "ladder", no: 8, x: 34.10, y: 45.90, at: "MCC" },
+    { type: "ladder", no: 9, x: 77.15, y: 53.62, at: "DP-1" },
+    { type: "ladder", no: 10, x: 85.66, y: 58.95, at: "DP-1" }
+  ];
 
   // 접근 허용 구역 (기존과 동일한 좌표)
   const GEOFENCE = [
@@ -697,6 +849,10 @@
     pin:     '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
     ban:     '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
     alert:   '<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.3v.2"/>',
+    stairs:  '<path d="M3 20.5h4.6v-4.6h4.6v-4.6h4.6V6.7H21"/>',
+    ladder:  '<path d="M7 2.5v19M17 2.5v19M7 6.5h10M7 11h10M7 15.5h10M7 20h10"/>',
+    fit:     '<path d="M4 9.5V4h5.5M20 9.5V4h-5.5M4 14.5V20h5.5M20 14.5V20h-5.5"/>',
+    list:    '<path d="M9.5 6.5H20M9.5 12H20M9.5 17.5H20"/><path d="M4.5 6.5h.5M4.5 12h.5M4.5 17.5h.5" stroke-width="3"/>',
     plus:    '<path d="M12 5v14M5 12h14"/>',
     minus:   '<path d="M5 12h14"/>'
   };
@@ -897,9 +1053,28 @@
       '<span class="chev">' + svg("chevR", 22) + '</span></button></div>';
   }
 
+  // 이미지 파일은 확장자 없이 이름만 지정 → .png .jpg .jpeg .webp (대문자 확장자 포함) 순서로 자동으로 찾음
+  const IMG_EXTS = [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG", ".JPEG", ".WEBP"];
+  const imgFound = {};                  // 이름 → 찾은 주소 (없으면 false)
+  function findImage(name, exts, done, fresh) {
+    if (!fresh && imgFound[name]) { done(imgFound[name]); return; }
+    if (!fresh && imgFound[name] === false) { done(null); return; }
+    (function next(i) {
+      if (i >= exts.length) { if (navigator.onLine) imgFound[name] = false; done(null); return; }
+      const url = IMAGE_BASE + name + exts[i], im = new Image();
+      im.onload = function () { imgFound[name] = url; done(url); };
+      im.onerror = function () { next(i + 1); };
+      im.src = fresh ? url + "?t=" + Date.now() : url;
+    })(0);
+  }
+  function logoErr(img) {               // 로고: logo.png → logo.jpg … 없으면 글자 로고
+    const i = Number(img.getAttribute("data-i") || 0) + 1;
+    if (i < IMG_EXTS.length) { img.setAttribute("data-i", i); img.src = IMAGE_BASE + LOGO_NAME + IMG_EXTS[i]; }
+    else { imgFound[LOGO_NAME] = false; img.parentNode.classList.add("fallback"); }
+  }
+
   function imageBlock(file, label) {
-    const src = IMAGE_BASE + file;
-    return '<figure class="imgbox rise" style="--i:1" data-src="' + esc(src) + '" data-label="' + esc(label) + '">' +
+    return '<figure class="imgbox rise" style="--i:1" data-name="' + esc(file) + '" data-label="' + esc(label) + '">' +
       '<div class="img-frame">' +
         '<div class="img-state img-loading"><span class="spinner" aria-label="불러오는 중"></span></div>' +
         '<button type="button" class="img-hit" data-zoom hidden aria-label="' + esc(label) + ' 크게 보기">' +
@@ -909,39 +1084,56 @@
         '<div class="img-state img-error" hidden>' +
           '<span class="err-ico">' + svg("image", 32) + '</span>' +
           '<p class="err-text"></p>' +
-          '<code class="err-file">' + esc(file) + '</code>' +
+          '<code class="err-file">' + esc(file) + '.png</code>' +
           '<button type="button" class="err-retry">다시 시도</button>' +
         '</div>' +
       '</div></figure>';
   }
 
+  /* ---------- 공정 내 비상대피로 지도 ---------- */
+  // 배치도 (온산공장 배치도 중 지정 구역, 오른쪽 위는 범례 자리)
+  const EVAC_SVG = "<svg class=\"evm-svg\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"28.71 425.25 821.18 286.46\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\">\n  <style>\n.evm-svg .ground{fill:#f3f1f8}\n.evm-svg .site{fill:#fff;stroke:#3a3450;stroke-width:2;stroke-linejoin:round}\n.evm-svg .zone{fill:none;stroke:#cbc7d8;stroke-width:1}\n.evm-svg .blk{fill:#faf9fc;stroke:#aaa5bb;stroke-width:1}\n.evm-svg .div{fill:none;stroke:#cfcbdb;stroke-width:.8}\n.evm-svg .lot{fill:#f4f3f8;stroke:#aaa5bb;stroke-width:1}\n.evm-svg .bld{fill:#f1f0f6;stroke:#857f9a;stroke-width:1.1}\n.evm-svg .bdiv{fill:none;stroke:#8f8aa3;stroke-width:.8}\n.evm-svg .sm{fill:#fff;stroke:#8f8aa3;stroke-width:.8}\n.evm-svg .tank{fill:#fff;stroke:#a19cb3;stroke-width:.85}\n.evm-svg .sym{fill:#fff;stroke:#4a4460;stroke-width:1}\n.evm-svg .symln{fill:none;stroke:#4a4460;stroke-width:1}\n.evm-svg .symf{fill:#6d6782}\n.evm-svg .lu{fill:#e3ecf7;stroke:#9cb0c8;stroke-width:.8}\n.evm-svg .lt{fill:#eef0e1;stroke:#b3b596;stroke-width:.8}\n.evm-svg .lc{fill:#fbe7d8;stroke:#dcae8f;stroke-width:.8}\n.evm-svg .wh{fill:#fff;stroke:#8f8aa3;stroke-width:.8}\n.evm-svg .area{fill:#fff;stroke:#8f8aa3;stroke-width:.8}\n.evm-svg .stw{fill:#fff;stroke:#3a3450;stroke-width:1.3}\n.evm-svg .lead{fill:none;stroke:#9cb0c8;stroke-width:1}\n.evm-svg text{font-family:\"Pretendard Variable\",Pretendard,-apple-system,BlinkMacSystemFont,\"Apple SD Gothic Neo\",\"Noto Sans KR\",\"Noto Sans CJK KR\",\"Malgun Gothic\",\"맑은 고딕\",sans-serif;\n         fill:#26213a;text-anchor:middle;letter-spacing:-.02em}\n.evm-svg .b{font-weight:700}\n.evm-svg .m{font-weight:500;fill:#4b465f}\n.evm-svg .h{paint-order:stroke;stroke:#fff;stroke-width:2.2px;stroke-linejoin:round}\n</style>\n  <rect class=\"ground\" x=\"0\" y=\"8\" width=\"862\" height=\"702\"/>\n  <g id=\"site\">\n    <path class=\"site\" d=\"M3.5 705L3.5 184L209.5 37L487 37L857.5 14.5L857.5 705Z\"/>\n  </g>\n  <g id=\"zone\">\n    <path class=\"zone\" d=\"M546 300L546 532\"/>\n    <path class=\"zone\" d=\"M835 307.5L835 532\"/>\n    <path class=\"zone\" d=\"M771 307.5L771 519\"/>\n    <path class=\"zone\" d=\"M546 519L835 519\"/>\n    <rect class=\"zone\" x=\"73\" y=\"543.5\" width=\"99.5\" height=\"85\"/>\n    <path class=\"zone\" d=\"M159 543.5L159 628.5\"/>\n    <rect class=\"zone\" x=\"45\" y=\"638\" width=\"125.5\" height=\"45\"/>\n    <path class=\"zone\" d=\"M148.5 638L148.5 683\"/>\n    <rect class=\"zone\" x=\"539\" y=\"554\" width=\"311.5\" height=\"149.5\"/>\n  </g>\n  <g id=\"block\">\n  </g>\n  <g id=\"tank\">\n    <ellipse class=\"tank\" cx=\"659.5\" cy=\"413.3\" rx=\"32.2\" ry=\"30\"/>\n    <ellipse class=\"tank\" cx=\"589.3\" cy=\"413.8\" rx=\"16.7\" ry=\"16.2\"/>\n    <ellipse class=\"tank\" cx=\"726.2\" cy=\"414.5\" rx=\"16.2\" ry=\"15.5\"/>\n    <ellipse class=\"tank\" cx=\"599.7\" cy=\"467.2\" rx=\"33.7\" ry=\"30.5\"/>\n    <ellipse class=\"tank\" cx=\"723.8\" cy=\"467.7\" rx=\"35.5\" ry=\"30\"/>\n    <ellipse class=\"tank\" cx=\"797\" cy=\"445.8\" rx=\"13.7\" ry=\"14.2\"/>\n    <ellipse class=\"tank\" cx=\"797\" cy=\"482.8\" rx=\"13.7\" ry=\"14\"/>\n    <circle class=\"tank\" cx=\"561.7\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"592.3\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"625\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"658.3\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"687.7\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"722.7\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"756.7\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"786.7\" cy=\"512.5\" r=\"5.8\"/>\n    <circle class=\"tank\" cx=\"814\" cy=\"512.5\" r=\"5.8\"/>\n    <ellipse class=\"tank\" cx=\"93.5\" cy=\"560.5\" rx=\"12.3\" ry=\"12.1\"/>\n    <ellipse class=\"tank\" cx=\"125\" cy=\"559.2\" rx=\"12\" ry=\"12.2\"/>\n    <circle class=\"tank\" cx=\"93.5\" cy=\"586\" r=\"8\"/>\n    <circle class=\"tank\" cx=\"124.6\" cy=\"586\" r=\"12\"/>\n    <ellipse class=\"tank\" cx=\"93.7\" cy=\"612.5\" rx=\"12.2\" ry=\"11.6\"/>\n    <ellipse class=\"tank\" cx=\"123.4\" cy=\"612.5\" rx=\"11\" ry=\"11.5\"/>\n    <circle class=\"tank\" cx=\"146.5\" cy=\"602.5\" r=\"6.5\"/>\n    <ellipse class=\"tank\" cx=\"146.2\" cy=\"618.5\" rx=\"6.6\" ry=\"6.5\"/>\n    <circle class=\"tank\" cx=\"71.5\" cy=\"651.5\" r=\"10.6\"/>\n    <circle class=\"tank\" cx=\"99\" cy=\"651.5\" r=\"10.8\"/>\n    <circle class=\"tank\" cx=\"125\" cy=\"651.5\" r=\"10.6\"/>\n    <ellipse class=\"tank\" cx=\"59\" cy=\"670.4\" rx=\"11\" ry=\"10.8\"/>\n    <ellipse class=\"tank\" cx=\"85\" cy=\"670.4\" rx=\"11\" ry=\"10.8\"/>\n    <ellipse class=\"tank\" cx=\"111\" cy=\"670.4\" rx=\"11\" ry=\"10.8\"/>\n    <ellipse class=\"tank\" cx=\"135.8\" cy=\"670.4\" rx=\"9.8\" ry=\"10.4\"/>\n  </g>\n  <g id=\"bld\">\n    <rect class=\"bld\" x=\"61.5\" y=\"446.5\" width=\"79\" height=\"64.5\"/>\n    <rect class=\"sm\" x=\"41\" y=\"473\" width=\"13.5\" height=\"44\"/>\n    <rect class=\"bld\" x=\"182.5\" y=\"440\" width=\"43\" height=\"71\"/>\n    <path class=\"bdiv\" d=\"M182.5 479.5L225.5 479.5\"/>\n    <rect class=\"bld\" x=\"225.5\" y=\"459\" width=\"25\" height=\"30.5\"/>\n    <rect class=\"bld\" x=\"225.5\" y=\"489.5\" width=\"34\" height=\"21.5\"/>\n    <rect class=\"bld\" x=\"256\" y=\"453.5\" width=\"29.5\" height=\"27.5\"/>\n    <rect class=\"bld\" x=\"285.5\" y=\"441.5\" width=\"74\" height=\"39.5\"/>\n    <rect class=\"bld\" x=\"276\" y=\"485\" width=\"110\" height=\"32.5\"/>\n    <rect class=\"bld\" x=\"404.5\" y=\"434.5\" width=\"15.5\" height=\"28\"/>\n    <rect class=\"bld\" x=\"403.5\" y=\"468.5\" width=\"33\" height=\"27.5\"/>\n    <rect class=\"bld\" x=\"403.75\" y=\"499.5\" width=\"29.75\" height=\"15\"/>\n    <rect class=\"bld\" x=\"462.5\" y=\"436.5\" width=\"33\" height=\"28\"/>\n    <path class=\"bdiv\" d=\"M462.5 450.5L495.5 450.5\"/>\n    <rect class=\"bld\" x=\"466.5\" y=\"474\" width=\"25\" height=\"40.5\"/>\n    <path class=\"bdiv\" d=\"M466.5 500L491.5 500\"/>\n    <rect class=\"bld\" x=\"180.5\" y=\"554\" width=\"74\" height=\"53\"/>\n    <rect class=\"bld\" x=\"290.5\" y=\"555\" width=\"84\" height=\"38.5\" rx=\"5\"/>\n    <rect class=\"bld\" x=\"307.5\" y=\"618\" width=\"89\" height=\"33.5\"/>\n    <rect class=\"bld\" x=\"404\" y=\"618\" width=\"101.5\" height=\"33.5\"/>\n    <rect class=\"bld\" x=\"387\" y=\"662\" width=\"118.5\" height=\"38.5\"/>\n    <rect class=\"bld\" x=\"545.25\" y=\"561.5\" width=\"36.25\" height=\"29\"/>\n    <rect class=\"bld\" x=\"595.25\" y=\"566.5\" width=\"52.5\" height=\"25.75\"/>\n    <rect class=\"bld\" x=\"657.5\" y=\"566\" width=\"130\" height=\"43.5\"/>\n    <rect class=\"bld\" x=\"624.5\" y=\"620\" width=\"75\" height=\"52.5\"/>\n    <path class=\"bdiv\" d=\"M658 620L658 672.5\"/>\n    <rect class=\"bld\" x=\"711.5\" y=\"620\" width=\"38\" height=\"41.5\"/>\n    <rect class=\"bld\" x=\"765.75\" y=\"642.5\" width=\"46.75\" height=\"45\"/>\n    <rect class=\"bld\" x=\"821.5\" y=\"581.5\" width=\"21.5\" height=\"40\"/>\n    <rect class=\"bld\" x=\"557\" y=\"632.5\" width=\"40.75\" height=\"29.25\"/>\n    <circle class=\"tank\" cx=\"243.5\" cy=\"500.2\" r=\"5.6\"/>\n    <circle class=\"tank\" cx=\"485\" cy=\"443.3\" r=\"5.6\"/>\n    <circle class=\"tank\" cx=\"485.2\" cy=\"457.2\" r=\"5.8\"/>\n    <rect class=\"sym\" x=\"184.5\" y=\"565.5\" width=\"16\" height=\"16\"/>\n    <path class=\"symln\" d=\"M192.5 565.5L192.5 572.7\"/>\n    <path class=\"symf\" d=\"M186.9 572.7A5.6 5.6 0 0 0 198.1 572.7Z\"/>\n    <rect class=\"sym\" x=\"204\" y=\"565.5\" width=\"16\" height=\"16\"/>\n    <path class=\"symln\" d=\"M212 565.5L212 572.7\"/>\n    <path class=\"symf\" d=\"M206.4 572.7A5.6 5.6 0 0 0 217.6 572.7Z\"/>\n  </g>\n  <g id=\"label\">\n    <rect class=\"lu\" x=\"198\" y=\"457.5\" width=\"26.5\" height=\"15\"/>\n    <rect class=\"lu\" x=\"198.5\" y=\"483\" width=\"26\" height=\"14\"/>\n    <rect class=\"lc\" x=\"308\" y=\"454\" width=\"36.5\" height=\"16\"/>\n    <rect class=\"lu\" x=\"292.5\" y=\"490.5\" width=\"67\" height=\"15.5\"/>\n    <rect class=\"lu\" x=\"404.5\" y=\"483\" width=\"22\" height=\"12\"/>\n    <rect class=\"lu\" x=\"467.5\" y=\"486.5\" width=\"23\" height=\"18\"/>\n    <rect class=\"lt\" x=\"74.5\" y=\"576.6\" width=\"77\" height=\"17\"/>\n    <rect class=\"lt\" x=\"57.5\" y=\"653\" width=\"79\" height=\"16.4\"/>\n    <rect class=\"lu\" x=\"319\" y=\"628\" width=\"68.5\" height=\"16\"/>\n    <rect class=\"lu\" x=\"422.5\" y=\"627.5\" width=\"67.5\" height=\"16.5\"/>\n    <rect class=\"lu\" x=\"416.5\" y=\"672.5\" width=\"67\" height=\"16\"/>\n    <rect class=\"lu\" x=\"676\" y=\"568.5\" width=\"26\" height=\"12.5\"/>\n    <rect class=\"lu\" x=\"729.5\" y=\"576\" width=\"51.5\" height=\"27.5\"/>\n    <rect class=\"lu\" x=\"664\" y=\"644.5\" width=\"30\" height=\"13\"/>\n    <rect class=\"lu\" x=\"711.5\" y=\"624.5\" width=\"38\" height=\"16.5\"/>\n    <rect class=\"wh\" x=\"669.5\" y=\"659\" width=\"28\" height=\"11.5\"/>\n    <rect class=\"lt\" x=\"770.5\" y=\"649\" width=\"37.5\" height=\"33.5\"/>\n    <rect class=\"lu\" x=\"558.25\" y=\"664.25\" width=\"42.25\" height=\"26.5\"/>\n    <rect class=\"stw\" x=\"404\" y=\"639.5\" width=\"12\" height=\"12\"/>\n    <rect class=\"stw\" x=\"493.5\" y=\"618\" width=\"12\" height=\"12\"/>\n    <rect class=\"stw\" x=\"387\" y=\"688.5\" width=\"12\" height=\"12\"/>\n    <rect class=\"stw\" x=\"493.5\" y=\"662\" width=\"12\" height=\"12\"/>\n  </g>\n  <g id=\"text\">\n    <text class=\"m\" x=\"101\" y=\"481.49\" font-size=\"7.2\">신축조정실</text>\n    <text class=\"m\" x=\"47.75\" y=\"480.54\" font-size=\"5.4\">옥</text>\n    <text class=\"m\" x=\"47.75\" y=\"488.74\" font-size=\"5.4\">내</text>\n    <text class=\"m\" x=\"47.75\" y=\"496.94\" font-size=\"5.4\">저</text>\n    <text class=\"m\" x=\"47.75\" y=\"505.14\" font-size=\"5.4\">장</text>\n    <text class=\"m\" x=\"47.75\" y=\"513.34\" font-size=\"5.4\">소</text>\n    <text class=\"b\" x=\"211.25\" y=\"467.9\" font-size=\"7.4\">#1 IPA</text>\n    <text class=\"b\" x=\"211.5\" y=\"492.5\" font-size=\"6.9\">#3 TDM</text>\n    <path class=\"lead\" d=\"M240 448.5L240 459\"/><rect class=\"lu\" x=\"229\" y=\"437\" width=\"46\" height=\"11.5\"/><text class=\"b\" x=\"252\" y=\"445.2\" font-size=\"6.6\">#3 TDM Comp</text>\n    \n    \n    <text class=\"m\" x=\"270.75\" y=\"469.63\" font-size=\"6.2\">변전실</text>\n    <text class=\"b\" x=\"326.25\" y=\"465.16\" font-size=\"8.5\">조정실</text>\n    <text class=\"b\" x=\"326\" y=\"501.4\" font-size=\"8.5\">NOM / NDM</text>\n    <text class=\"b\" x=\"415.5\" y=\"491.6\" font-size=\"7.2\">NaSH</text>\n    <text class=\"b\" x=\"479\" y=\"494.1\" font-size=\"6.8\">#1, 2</text>\n    <text class=\"b\" x=\"479\" y=\"501.7\" font-size=\"6.8\">TDM</text>\n    <text class=\"m\" x=\"599.7\" y=\"469.03\" font-size=\"4.8\">TK-3803</text>\n    <text class=\"m\" x=\"723.8\" y=\"469.53\" font-size=\"4.8\">TK-3802</text>\n    <text class=\"m h\" x=\"549.5\" y=\"516.26\" font-size=\"4.6\" style=\"text-anchor:start\">TK-6501</text>\n    <text class=\"b\" x=\"113\" y=\"588.37\" font-size=\"8.8\">IPA Tank</text>\n    <text class=\"b\" x=\"97\" y=\"664.25\" font-size=\"8.2\">NOM/NDM Tank</text>\n    <text class=\"b\" x=\"332.5\" y=\"578.36\" font-size=\"11\">MCC</text>\n    <text class=\"b\" x=\"353.25\" y=\"639.16\" font-size=\"8.5\">LP-1</text>\n    <text class=\"b\" x=\"456.25\" y=\"638.96\" font-size=\"8.5\">LP-1</text>\n    <text class=\"b\" x=\"450\" y=\"683.66\" font-size=\"8.5\">LP-1</text>\n    <text class=\"b\" x=\"563.4\" y=\"573.55\" font-size=\"7.5\">옥외</text>\n    <text class=\"b\" x=\"563.4\" y=\"584.05\" font-size=\"7.5\">저장소</text>\n    <text class=\"b\" x=\"621.5\" y=\"582.74\" font-size=\"9\">MCC</text>\n    <text class=\"b\" x=\"689\" y=\"578\" font-size=\"8.4\">DP-1</text>\n    <text class=\"b\" x=\"755.25\" y=\"593.14\" font-size=\"9\">DP-1</text>\n    <text class=\"b\" x=\"679\" y=\"654.3\" font-size=\"8.4\">DP-2</text>\n    <text class=\"b\" x=\"729.6\" y=\"634.3\" font-size=\"9\">DP-2</text>\n    <text class=\"b\" x=\"683.5\" y=\"667.64\" font-size=\"7.6\">SCR</text>\n    <text class=\"b\" x=\"789.25\" y=\"663.21\" font-size=\"8.5\">LPG</text>\n    <text class=\"b\" x=\"789.25\" y=\"674.71\" font-size=\"8.5\">Tank</text>\n    <text class=\"m\" x=\"832.25\" y=\"595.86\" font-size=\"4.6\">산업</text>\n    <text class=\"m\" x=\"832.25\" y=\"603.26\" font-size=\"4.6\">폐기물</text>\n    <text class=\"m\" x=\"832.25\" y=\"610.66\" font-size=\"4.6\">보관장</text>\n    <text class=\"b\" x=\"577.4\" y=\"645.33\" font-size=\"6.2\">Scrubber</text>\n    <text class=\"b\" x=\"577.4\" y=\"653.53\" font-size=\"6.2\">etc</text>\n    <text class=\"b\" x=\"579.4\" y=\"680.77\" font-size=\"8.8\">C/T</text>\n  </g>\n<rect x=\"519.34\" y=\"420\" width=\"335\" height=\"121.46\" fill=\"#fff\"/></svg>";
+  const EV_TYPES = {
+    stair:  { name: "계단",       icon: "stairs", file: "stair" },
+    ladder: { name: "수직사다리", icon: "ladder", file: "ladder" }
+  };
+  const EV_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".JPG", ".JPEG", ".PNG", ".WEBP"];   // 사진은 jpg부터 찾음
+  const EV_LIST = EVAC_POINTS.slice().sort(function (a, b) {
+    return (a.type === b.type ? 0 : a.type === "stair" ? -1 : 1) || a.no - b.no;
+  });
+  const EV_BY_ID = {};
+  EV_LIST.forEach(function (p) { p.id = p.type + "-" + p.no; EV_BY_ID[p.id] = p; });
+  function evName(p) { return (p.at ? p.at + " " : "") + EV_TYPES[p.type].name; }
+  function evFile(p) { return EV_TYPES[p.type].file + p.no; }        // stair1 ~ stair15, ladder1 ~ ladder10
+
   function evacMap() {
-    const m = EVAC_MAP;
-    if (!m.image) {
-      return '<div class="evac rise" style="--i:1"><div class="evac-empty">' +
-          '<span class="evac-empty-ico">' + svg("map", 32) + '</span>' +
-          '<p class="evac-empty-title">공정 지도 준비 중</p>' +
-        '</div></div>';
-    }
-    const legend = m.pins.map(function (p, i) {
-      return '<li><button type="button" class="legend-btn" data-pin="' + i + '">' +
-        '<span class="pin-mini">' + esc(p.no) + '</span><span class="t">' + esc(p.label) + '</span>' +
-        '<span class="chev">' + svg("chevR", 18) + '</span></button></li>';
+    const markers = EV_LIST.map(function (p) {
+      return '<button type="button" class="evm-pt ' + p.type + (p.room ? ' room' : '') + '" data-ev="' + p.id + '" ' +
+        'style="left:' + p.x + '%;top:' + p.y + '%" aria-pressed="false" aria-label="' + esc(evName(p) + " " + p.no + "번") + '">' + p.no + '</button>';
     }).join("");
-    return '<div class="evac rise" style="--i:1">' +
-        '<div class="evac-scroll"><div class="evac-canvas" style="width:' + esc(m.canvasWidth || "100%") + '">' +
-          '<button type="button" class="evac-open" data-evac-open tabindex="-1" aria-label="공장 배치도 크게 보기">' +
-            '<img src="' + esc(IMAGE_BASE + m.image) + '" alt="공정 내 비상대피로 지도 (공장 배치도)" draggable="false">' +
-          '</button>' + pinButtons(m.pins, "data-pin") +
-        '</div></div>' +
-        '<div class="evac-error" hidden>' +
-          '<span class="err-ico">' + svg("map", 32) + '</span>' +
-          '<p class="err-text"></p><code class="err-file">' + esc(m.image) + '</code>' +
+    return '<section class="evm rise" style="--i:1" id="evm" aria-label="공정 내 비상대피로 지도">' +
+        '<div class="evm-stage" id="evm-stage"><div class="evm-track" id="evm-track"><div class="evm-board" id="evm-board">' +
+          EVAC_SVG + markers +
+        '</div></div></div>' +
+        '<span class="evm-fade l"></span><span class="evm-fade r"></span>' +
+        '<div class="evm-key" aria-hidden="true">' +
+          '<span class="stair"><i></i>계단</span><span class="ladder"><i></i>수직사다리</span>' +
         '</div>' +
-        '<button type="button" class="evac-bar" data-evac-open>' + svg("zoom", 20) + '<span>지도 크게 보기</span></button>' +
-      '</div>' +
-      (legend ? '<p class="evac-note rise" style="--i:2">지도의 번호 버튼(또는 아래 목록)을 누르면 비상대피로 사진이 열립니다.</p>' +
-                '<ol class="legend rise" style="--i:3" aria-label="비상대피로 목록">' + legend + '</ol>' : '');
+        '<button type="button" class="evm-edge l" data-evm="left" aria-label="지도 왼쪽 보기">' + svg("back", 22, 2.6) + '</button>' +
+        '<button type="button" class="evm-edge r" data-evm="right" aria-label="지도 오른쪽 보기">' + svg("chevR", 22, 2.6) + '</button>' +
+        '<button type="button" class="evm-fab fit" data-evm="fit"></button>' +
+      '</section>' +
+      '<section class="evp" id="evp" hidden aria-live="polite">' +
+        '<div class="evp-head">' +
+          '<span class="evp-badge" id="evp-badge"></span>' +
+          '<div class="evp-tt"><strong id="evp-title"></strong></div>' +
+          '<div class="evp-nav">' +
+            '<button type="button" data-evp="-1" aria-label="이전 위치">' + svg("back", 20, 2.6) + '</button>' +
+            '<button type="button" data-evp="1" aria-label="다음 위치">' + svg("chevR", 20, 2.6) + '</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="evp-frame" id="evp-frame"></div>' +
+      '</section>';
   }
 
   // 원형 버튼 (공정 지도 화면·전체화면 지도 공용)
@@ -950,9 +1142,6 @@
       return '<button type="button" class="pin" style="left:' + Number(p.x) + '%;top:' + Number(p.y) + '%" ' + attr + '="' + i +
         '" aria-label="비상대피로 ' + esc(p.no) + ' ' + esc(p.label) + '">' + esc(p.no) + '</button>';
     }).join("");
-  }
-  function openEvacMap() {
-    openViewer(IMAGE_BASE + EVAC_MAP.image, COMMON_BY_KEY["evac-map"].title, EVAC_MAP.pins);
   }
   function openPin(p) {
     openViewer(IMAGE_BASE + p.image, "비상대피로 " + p.no + " · " + p.label);
@@ -969,8 +1158,8 @@
 
   function viewHome() {
     return '<header class="hero">' + HERO_MOL + '<div class="band-in">' +
-        '<span class="logo-chip"><img src="' + esc(LOGO_SRC) + '" alt="이수스페셜티케미컬" ' +
-          'onerror="this.parentNode.classList.add(\'fallback\')"><span>이수스페셜티케미컬</span></span>' +
+        '<span class="logo-chip' + (imgFound[LOGO_NAME] === false ? ' fallback' : '') + '"><img src="' + esc(imgFound[LOGO_NAME] || IMAGE_BASE + LOGO_NAME + IMG_EXTS[0]) + '" alt="이수스페셜티케미컬" ' +
+          'onload="imgFound[LOGO_NAME]=this.src" onerror="logoErr(this)"><span>이수스페셜티케미컬</span></span>' +
         '<h1 class="hero-title" tabindex="-1" data-focus>유해화학물질 정보제공</h1>' +
       '</div></header>' +
       '<main class="wrap">' +
@@ -1082,6 +1271,7 @@
     view.classList.remove("enter");
     if (!sameView) { void view.offsetWidth; view.classList.add("enter"); }
     mountImages(view);
+    mountEvac(view);
     document.title = titleOf(r);
     document.querySelector('meta[name="theme-color"]').setAttribute("content", r.view === "common" ? "#ee6f15" : "#4f35ba");
 
@@ -1164,7 +1354,7 @@
 
   document.addEventListener("click", function (e) {
     if (e.defaultPrevented || e.button !== 0) return;
-    const el = e.target.closest("[data-nav],[data-back],[data-toggle],[data-zoom],[data-pin],[data-evac-open]");
+    const el = e.target.closest("[data-nav],[data-back],[data-toggle],[data-zoom]");
     if (!el || !view.contains(el)) return;
 
     if (el.hasAttribute("data-nav")) {
@@ -1181,11 +1371,6 @@
       const box = el.closest(".imgbox");
       const img = box.querySelector("img");
       openViewer(img.currentSrc || img.src, box.getAttribute("data-label"));
-    } else if (el.hasAttribute("data-pin")) {
-      const p = EVAC_MAP.pins[Number(el.getAttribute("data-pin"))];
-      if (p) openPin(p);
-    } else if (el.hasAttribute("data-evac-open")) {
-      openEvacMap();
     }
   });
 
@@ -1208,35 +1393,201 @@
       const hit = box.querySelector(".img-hit");
       const loading = box.querySelector(".img-loading");
       const error = box.querySelector(".img-error");
-      const src = box.getAttribute("data-src");
-
+      const name = box.getAttribute("data-name");
+      function fail() {
+        loading.hidden = true; hit.hidden = true; error.hidden = false;
+        box.querySelector(".err-text").textContent = navigator.onLine ? "이미지 준비 중" : "오프라인 상태입니다";
+      }
+      function load(fresh) {
+        error.hidden = true; hit.hidden = true; loading.hidden = false;
+        findImage(name, IMG_EXTS, function (url) { if (url) img.src = url; else fail(); }, fresh);
+      }
       img.addEventListener("load", function () {
         loading.hidden = true; error.hidden = true; hit.hidden = false;
       });
-      img.addEventListener("error", function () {
-        loading.hidden = true; hit.hidden = true; error.hidden = false;
-        box.querySelector(".err-text").textContent = navigator.onLine ? "이미지 준비 중" : "오프라인 상태입니다";
-      });
-      box.querySelector(".err-retry").addEventListener("click", function () {
-        error.hidden = true; loading.hidden = false;
-        img.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now();
-      });
-      img.src = src;
-    });
-    // 공정 지도 파일을 못 불러오면 안내 표시
-    root.querySelectorAll(".evac").forEach(function (box) {
-      const img = box.querySelector(".evac-open img");
-      if (!img) return;
-      function fail() {
-        box.querySelector(".evac-scroll").hidden = true;
-        box.querySelector(".evac-bar").hidden = true;
-        box.querySelector(".evac-error").hidden = false;
-        box.querySelector(".err-text").textContent = navigator.onLine ? "공정 지도 준비 중" : "오프라인 상태입니다";
-      }
-      if (img.complete && !img.naturalWidth) fail();
-      else img.addEventListener("error", fail);
+      img.addEventListener("error", fail);
+      box.querySelector(".err-retry").addEventListener("click", function () { load(true); });
+      load(false);
     });
   }
+
+
+  /* =====================================================================
+   * 7-1. 공정 내 비상대피로 지도
+   *      원형 버튼 또는 범례를 누르면 → 지도 아래 사진 창에 사진 표시
+   *      사진 창: 이전/다음 버튼, 사진을 좌우로 밀어 넘기기, 사진을 누르면 크게 보기
+   * =================================================================== */
+  let evSel = null, evOv = false, evSeq = 0;
+
+  function mountEvac(root) {
+    evSel = null; evOv = false;
+    const m = root.querySelector("#evm");
+    if (!m) return;
+    const st = m.querySelector("#evm-stage");
+    let raf = 0;
+    st.addEventListener("scroll", function () {
+      if (!raf) raf = requestAnimationFrame(function () { raf = 0; evEdges(); });
+    }, { passive: true });
+    m.addEventListener("click", evClick);
+    root.querySelector("#evp").addEventListener("click", function (e) {
+      const b = e.target.closest("[data-evp]");
+      if (b) evStep(Number(b.getAttribute("data-evp")));
+    });
+    evSwipe(root.querySelector("#evp-frame"));
+    evFitLabel();
+    evEdges();
+  }
+
+  // 지도 좌우 끝에 닿으면 그쪽 화살표·흐림 숨김
+  function evEdges() {
+    const m = $("#evm"), st = $("#evm-stage");
+    if (!m || !st) return;
+    const max = st.scrollWidth - st.clientWidth;
+    m.classList.toggle("at-start", st.scrollLeft <= 4);
+    m.classList.toggle("at-end", st.scrollLeft >= max - 4);
+  }
+
+  function evClick(e) {
+    if (evOv) {                                   // 전체 보기 중: 누른 곳을 가운데 두고 다시 확대
+      if (e.target.closest('[data-evm="fit"]')) { evSetOv(false); return; }
+      const bd = $("#evm-board"), r = bd.getBoundingClientRect();
+      evSetOv(false, (e.clientX - r.left) / (r.width / bd.offsetWidth));
+      return;
+    }
+    const t = e.target.closest("[data-ev],[data-evm]");
+    if (!t) return;
+    if (t.hasAttribute("data-ev")) { evSelect(t.getAttribute("data-ev"), { map: "near", page: true }); return; }
+    const a = t.getAttribute("data-evm"), st = $("#evm-stage");
+    if (a === "left" || a === "right") st.scrollBy({ left: (a === "left" ? -1 : 1) * st.clientWidth * 0.7, behavior: "smooth" });
+    else if (a === "fit") evSetOv(true);
+  }
+
+  // 전체 보기(지도 전체를 화면 폭에 맞춤) ↔ 확대
+  function evSetOv(on, focusX) {
+    const st = $("#evm-stage"), tr = $("#evm-track"), bd = $("#evm-board");
+    if (!st) return;
+    const pad = parseFloat(getComputedStyle(st).paddingLeft) || 0;
+    const W = bd.offsetWidth, H = bd.offsetHeight, view = st.clientWidth - pad * 2;
+    if (on) {
+      if (!evOv) evOv = { left: st.scrollLeft };
+      const k = Math.min(1, view / W);
+      tr.style.width = W * k + "px"; tr.style.height = H * k + "px";
+      bd.style.transform = "scale(" + k + ")";
+      st.scrollLeft = 0;
+    } else {
+      const prev = evOv; evOv = false;
+      tr.style.width = ""; tr.style.height = ""; bd.style.transform = "";
+      st.scrollLeft = focusX != null ? focusX - view / 2 : (prev ? prev.left : 0);
+    }
+    $("#evm").classList.toggle("ov", !!evOv);
+    bd.classList.remove("pop"); void bd.offsetWidth; bd.classList.add("pop");
+    evFitLabel(); evEdges();
+  }
+  function evFitLabel() {
+    const b = document.querySelector('[data-evm="fit"]');
+    if (b) b.innerHTML = evOv ? svg("zoom", 18, 2.4) + "<span>확대</span>" : svg("fit", 18, 2.4) + "<span>전체</span>";
+  }
+
+  function evSelect(id, opt) {
+    const p = EV_BY_ID[id], m = $("#evm");
+    if (!p || !m) return;
+    opt = opt || {};
+    evSel = id;
+    m.classList.add("has-sel");
+    m.querySelectorAll("[data-ev]").forEach(function (b) {
+      const on = b.getAttribute("data-ev") === id;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+    const pt = m.querySelector('.evm-pt[data-ev="' + id + '"]');
+    if (opt.map) evShowOnMap(pt, opt.map === "center");
+    evPanel(p, opt.dir || 0);
+    if (opt.page) requestAnimationFrame(function () { evReveal(pt); });
+  }
+
+  // 선택한 원이 지도 화면 안에 보이도록 좌우 이동
+  function evShowOnMap(pt, center) {
+    const st = $("#evm-stage");
+    const pad = parseFloat(getComputedStyle(st).paddingLeft) || 0;
+    const x = pad + pt.offsetLeft + pt.offsetWidth / 2, vw = st.clientWidth, sl = st.scrollLeft;
+    if (!center && x > sl + 72 && x < sl + vw - 72) return;
+    st.scrollTo({ left: x - vw / 2, behavior: "smooth" });
+  }
+
+  // 사진 창이 화면 안에 들어오도록 아래로 이동 (선택한 원은 가려지지 않게)
+  function evReveal(pt) {
+    const panel = $("#evp");
+    if (!panel || panel.hidden) return;
+    let d = panel.getBoundingClientRect().bottom - window.innerHeight + 12;
+    if (d <= 0) return;
+    d = Math.min(d, pt.getBoundingClientRect().top - 76);
+    if (d > 8) window.scrollBy({ top: d, behavior: "smooth" });
+  }
+
+  function evStep(d) {
+    if (!evSel) return;
+    const i = EV_LIST.indexOf(EV_BY_ID[evSel]);
+    const n = EV_LIST[(i + d + EV_LIST.length) % EV_LIST.length];
+    evSelect(n.id, { map: "near", dir: d });
+  }
+
+  function evPanel(p, dir) {
+    const panel = $("#evp"), t = EV_TYPES[p.type];
+    panel.hidden = false;
+    panel.className = "evp " + p.type;
+    const badge = $("#evp-badge");
+    badge.textContent = p.no;
+    badge.classList.toggle("room", !!p.room);
+    $("#evp-title").innerHTML = (p.at ? '<span>' + esc(p.at) + '</span> ' : '') + '<span class="evp-kind">' + t.name + '</span>';
+    evPhoto(p, dir);
+  }
+
+  // 사진 불러오기: stair1 → .jpg .jpeg .png .webp (대문자 확장자 포함) 순서로 찾음
+  function evPhoto(p, dir) {
+    const fr = $("#evp-frame"), seq = ++evSeq, t = EV_TYPES[p.type];
+    const label = evName(p);
+    function show(url) {
+      if (seq !== evSeq) return;
+      fr.setAttribute("data-url", url);
+      fr.setAttribute("data-label", label);
+      fr.innerHTML = '<img alt="' + esc(label + " 사진") + '" draggable="false"' +
+        (dir ? ' class="' + (dir > 0 ? "from-r" : "from-l") + '"' : '') + ' src="' + esc(url) + '">' +
+        '<span class="evp-zoom">' + svg("zoom", 22) + '</span>';
+    }
+    function empty() {
+      if (seq !== evSeq) return;
+      fr.removeAttribute("data-url");
+      fr.innerHTML = '<div class="evp-empty"><span class="evp-empty-ico">' + svg(t.icon, 36, 2.2) + '</span>' +
+        '<p>' + (navigator.onLine ? "사진 준비 중" : "오프라인 상태입니다") + '</p>' +
+        '<code>' + esc(p.photo || evFile(p) + ".jpg") + '</code></div>';
+    }
+    const name = p.photo || evFile(p);
+    if (imgFound[name] === undefined) {
+      fr.removeAttribute("data-url");
+      fr.innerHTML = '<span class="spinner evp-wait" aria-label="불러오는 중"></span>';
+    }
+    findImage(name, p.photo ? [""] : EV_EXTS, function (url) { if (url) show(url); else empty(); });
+  }
+
+  // 사진 창: 좌우로 밀면 이전/다음, 누르면 크게 보기
+  function evSwipe(fr) {
+    let sx = 0, sy = 0, pid = null;
+    fr.addEventListener("pointerdown", function (e) { pid = e.pointerId; sx = e.clientX; sy = e.clientY; });
+    fr.addEventListener("pointercancel", function () { pid = null; });
+    fr.addEventListener("pointerup", function (e) {
+      if (e.pointerId !== pid) return;
+      pid = null;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) evStep(dx < 0 ? 1 : -1);
+      else if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && fr.getAttribute("data-url")) {
+        openViewer(fr.getAttribute("data-url"), fr.getAttribute("data-label"));
+      }
+    });
+  }
+
+  window.addEventListener("resize", function () {
+    if (evOv) evSetOv(true); else evEdges();
+  });
 
   /* =====================================================================
    * 8. 전체화면 이미지 창 (핀치 줌 · 두 번 탭 · 드래그 이동 · 뒤로가기로 닫기)
@@ -1543,6 +1894,7 @@
     document.body.classList.add("access-granted");
     $("#gate").hidden = true;
     fitUnitRows();
+    evEdges();
     view.classList.remove("enter"); void view.offsetWidth; view.classList.add("enter");
     const h = view.querySelector("[data-focus]");
     if (h) h.focus({ preventScroll: true });
