@@ -28,7 +28,6 @@
    ■ 공정별 항목 (공정 코드마다 1장씩)
       응급처치 방법                 {공정코드}-aid     예) tdm12-aid.png
       취급 물질별 보호구 착용 기준    {공정코드}-ppe     예) tdm12-ppe.png
-      비상대피로 위치               {공정코드}-exit    예) tdm12-exit.png
 
    ■ MSDS 요약 정보 (물질별 1장 — 같은 물질은 여러 공정이 같은 파일을 사용)
       h2s  pt  tdm  nom  octene  naoh  nash  lioh     예) h2s.png
@@ -36,6 +35,7 @@
    ■ 공통 항목
       보호구 종류                    ppe              예) ppe.png
       세안기, 보안경 보관함 위치       eye              예) eye.png
+      안전장구함 위치                 gear             예) gear.png
       공정 내 비상대피로 위치         배치도는 이 파일 안에 들어 있음 (별도 파일 없음)
                                      지도 위 번호 버튼별 사진:
                                        계단        stair1  ~ stair15      예) stair1.jpg
@@ -290,7 +290,7 @@
 
     /* ================= 공통 항목 (주황 타일) ================= */
     .common-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
       margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line);
     }
     .c-tile {
@@ -783,15 +783,15 @@
   const UNIT_ITEMS = [
     { key: "msds",     type: "msds", icon: "msds", title: "MSDS 요약 정보" },
     { key: "firstaid", icon: "firstaid", title: "응급처치 방법",             file: "{u}-aid" },
-    { key: "ppe",      icon: "worker",   title: "취급 물질별 보호구 착용 기준", file: "{u}-ppe" },
-    { key: "evac",     icon: "exit",     title: "비상대피로 위치",           file: "{u}-exit" }
+    { key: "ppe",      icon: "worker",   title: "취급 물질별 보호구 착용 기준", file: "{u}-ppe" }
   ];
 
   // 공통 항목 (주황) — 모든 공정에 동일하게 적용
   const COMMON_ITEMS = [
     { key: "ppe-types", icon: "gasmask", title: "보호구 종류",               file: "ppe" },
     { key: "eyewash",   icon: "eyewash", title: "세안기, 보안경 보관함 위치",  file: "eye" },
-    { key: "evac-map",  icon: "exit",    title: "공정 내 비상대피로 위치",     type: "map" }
+    { key: "evac-map",  icon: "exit",    title: "공정 내 비상대피로 위치",     type: "map" },
+    { key: "safety-box", icon: "safebox", title: "안전장구함 위치",          file: "gear" }
   ];
 
   // 공정 내 비상대피로 — 지도 위 번호 버튼
@@ -915,7 +915,20 @@
         '<circle cx="17" cy="38.4" r="4.8"/>' +
       '</g>' +
       '<circle cx="17" cy="38.4" r="2"/>' +
-      '<path d="M35.2 4H40.4V9.4H45.8V14.6H40.4V20H35.2V14.6H29.8V9.4H35.2Z"/>'
+      '<path d="M35.2 4H40.4V9.4H45.8V14.6H40.4V20H35.2V14.6H29.8V9.4H35.2Z"/>',
+    // 안전장구함: 두 손이 받쳐 든 방패 + 십자 (방패 둘레는 손과 떨어지게 비움)
+    safebox:
+      '<mask id="{id}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/>' +
+        '<path transform="translate(24 2.6) scale(.9) translate(-24 -3)" fill="#000" stroke="#000" stroke-width="3.8" stroke-linejoin="round" ' +
+        'd="M24 3.2C27.6 5.6 31.6 6.6 35.4 6.2V17C35.4 23.6 30.8 28.6 24 31.4C17.2 28.6 12.6 23.6 12.6 17V6.2C16.4 6.6 20.4 5.6 24 3.2Z"/></mask>' +
+      '<path transform="translate(24 2.6) scale(.9) translate(-24 -3)" fill-rule="evenodd" ' +
+        'd="M24 3.2C27.6 5.6 31.6 6.6 35.4 6.2V17C35.4 23.6 30.8 28.6 24 31.4C17.2 28.6 12.6 23.6 12.6 17V6.2C16.4 6.6 20.4 5.6 24 3.2Z' +
+        'M21.8 10.6H26.2V14.8H30.4V19.2H26.2V23.4H21.8V19.2H17.6V14.8H21.8Z"/>' +
+      '<g mask="url(#{id})">' +
+        '<path d="M8.6 40.4L3.2 24.6C2.6 22.6 3.7 20.6 5.7 20.2C7.5 19.9 8.9 20.9 9.5 22.6L13.4 31.2L17.3 28.1C18.3 27.3 19.8 27.5 20.4 28.6C21 29.6 20.7 30.8 19.8 31.5L17.6 33.4C18.7 35.5 19.3 37.9 19.3 40.4Z"/>' +
+        '<path d="M39.4 40.4L44.8 24.6C45.4 22.6 44.3 20.6 42.3 20.2C40.5 19.9 39.1 20.9 38.5 22.6L34.6 31.2L30.7 28.1C29.7 27.3 28.2 27.5 27.6 28.6C27 29.6 27.3 30.8 28.2 31.5L30.4 33.4C29.3 35.5 28.7 37.9 28.7 40.4Z"/>' +
+      '</g>' +
+      '<rect x="7.8" y="41.8" width="12.2" height="4.4" rx="1.2"/><rect x="28" y="41.8" width="12.2" height="4.4" rx="1.2"/>'
   };
   let pictoSeq = 0;
   function picto(name, size) {
