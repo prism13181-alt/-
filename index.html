@@ -21,8 +21,9 @@
       tdm12 = #1, 2 TDM Unit    tdm3 = #3 TDM Unit    nomndm = NOM/NDM Unit
       nash  = NaSH Unit         li2s = Li2S Unit      lp1    = LP-1 Unit
 
-   ■ 파일 이름은 아래 이름 그대로 (소문자), 확장자는 .png .jpg .jpeg .webp 아무거나 가능
-      · 휴대폰 사진(HEIC)은 JPG로 바꿔서 올려야 함
+   ■ 파일 이름은 아래 이름 그대로 (소문자)
+      확장자는 .png .jpg .jpeg .webp .gif .svg .bmp .avif 아무거나 (대문자 .PNG .JPG 등도 가능)
+      · 휴대폰 사진(HEIC)·윈도우 저장 사진(JFIF)은 JPG로 바꿔서 올려야 함
 
    ■ 공정별 항목 (공정 코드마다 1장씩)
       응급처치 방법                 {공정코드}-aid     예) tdm12-aid.png
@@ -30,7 +31,7 @@
       비상대피로 위치               {공정코드}-exit    예) tdm12-exit.png
 
    ■ MSDS 요약 정보 (물질별 1장 — 같은 물질은 여러 공정이 같은 파일을 사용)
-      h2s  pt  nom  octene  naoh  nash  lioh          예) h2s.png
+      h2s  pt  tdm  nom  octene  naoh  nash  lioh     예) h2s.png
 
    ■ 공통 항목
       보호구 종류                    ppe              예) ppe.png
@@ -180,6 +181,7 @@
       border-radius: 10px; background: #fff; box-shadow: 0 6px 16px rgba(20,10,60,.18);
     }
     .logo-chip img { display: block; height: 19px; width: auto; }
+    .logo-chip img[hidden] { display: none; }
     .logo-chip span { display: none; font-size: 13px; font-weight: 800; color: var(--p-700); white-space: nowrap; }
     .logo-chip.fallback img { display: none; }
     .logo-chip.fallback span { display: block; }
@@ -759,6 +761,7 @@
   const SUBSTANCES = {
     h2s:    { code: "H₂S",      label: "황화수소",          file: "h2s" },
     pt:     { code: "PT",       label: "프로필렌 테트라머",   file: "pt" },
+    tdm:    { code: "TDM",      label: "Tertiary Dodecyl Mercaptan", file: "tdm" },
     nom:    { code: "NOM",      label: "노말옥틸머캅탄",      file: "nom" },
     octene: { code: "1-Octene", label: "1-옥텐",            file: "octene" },
     naoh:   { code: "NaOH",     label: "수산화나트륨",        file: "naoh" },
@@ -768,12 +771,12 @@
 
   // 공정 목록 (id = 이미지 파일명·QR 주소에 쓰이는 공정 코드, substances = MSDS 버튼 순서)
   const UNITS = [
-    { id: "tdm12",  name: "#1, 2 TDM", substances: ["h2s", "pt"] },
-    { id: "tdm3",   name: "#3 TDM",    substances: ["h2s", "pt"] },
+    { id: "tdm12",  name: "#1, 2 TDM", substances: ["h2s", "pt", "tdm"] },
+    { id: "tdm3",   name: "#3 TDM",    substances: ["h2s", "pt", "tdm"] },
     { id: "nomndm", name: "NOM/NDM",   substances: ["h2s", "nom", "octene"] },
-    { id: "nash",   name: "NaSH",      substances: ["h2s", "naoh"] },
-    { id: "li2s",   name: "Li₂S",      substances: ["h2s", "nash", "lioh"] },
-    { id: "lp1",    name: "LP-1",      substances: ["h2s", "nash", "lioh"] }
+    { id: "nash",   name: "NaSH",      substances: ["h2s", "naoh", "nash"] },
+    { id: "li2s",   name: "Li₂S",      substances: ["h2s", "lioh"] },
+    { id: "lp1",    name: "LP-1",      substances: ["h2s", "lioh"] }
   ];
 
   // 공정별 항목 (보라) — file 의 {u} 는 공정 코드로 바뀜
@@ -1053,24 +1056,35 @@
       '<span class="chev">' + svg("chevR", 22) + '</span></button></div>';
   }
 
-  // 이미지 파일은 확장자 없이 이름만 지정 → .png .jpg .jpeg .webp (대문자 확장자 포함) 순서로 자동으로 찾음
-  const IMG_EXTS = [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG", ".JPEG", ".WEBP"];
+  // 이미지 파일은 확장자 없이 이름만 지정 → 아래 확장자(소문자·대문자)를 한꺼번에 찾아봄
+  //   같은 이름이 여러 개 있으면 앞 순서(png → jpg → jpeg → webp → gif → svg → bmp → avif)가 우선
+  const IMG_TYPES = ["png", "jpg", "jpeg", "webp", "gif", "svg", "bmp", "avif"];
+  function extList(first) {             // first: 먼저 찾을 확장자 (사진은 jpg)
+    const t = first ? [first].concat(IMG_TYPES.filter(function (e) { return e !== first; })) : IMG_TYPES;
+    return t.map(function (e) { return "." + e; }).concat(t.map(function (e) { return "." + e.toUpperCase(); }));
+  }
+  const IMG_EXTS = extList();
   const imgFound = {};                  // 이름 → 찾은 주소 (없으면 false)
   function findImage(name, exts, done, fresh) {
     if (!fresh && imgFound[name]) { done(imgFound[name]); return; }
     if (!fresh && imgFound[name] === false) { done(null); return; }
-    (function next(i) {
-      if (i >= exts.length) { if (navigator.onLine) imgFound[name] = false; done(null); return; }
-      const url = IMAGE_BASE + name + exts[i], im = new Image();
-      im.onload = function () { imgFound[name] = url; done(url); };
-      im.onerror = function () { next(i + 1); };
-      im.src = fresh ? url + "?t=" + Date.now() : url;
-    })(0);
-  }
-  function logoErr(img) {               // 로고: logo.png → logo.jpg … 없으면 글자 로고
-    const i = Number(img.getAttribute("data-i") || 0) + 1;
-    if (i < IMG_EXTS.length) { img.setAttribute("data-i", i); img.src = IMAGE_BASE + LOGO_NAME + IMG_EXTS[i]; }
-    else { imgFound[LOGO_NAME] = false; img.parentNode.classList.add("fallback"); }
+    const urls = exts.map(function (e) { return IMAGE_BASE + name + e; });
+    const st = urls.map(function () { return 0; });       // 0 확인 중 · 1 있음 · -1 없음
+    let fin = false;
+    function settle() {
+      if (fin) return;
+      for (let i = 0; i < st.length; i++) {
+        if (st[i] === 0) return;                           // 앞 순서 결과를 기다림
+        if (st[i] === 1) { fin = true; imgFound[name] = urls[i]; done(urls[i]); return; }
+      }
+      fin = true; if (navigator.onLine) imgFound[name] = false; done(null);
+    }
+    urls.forEach(function (u, i) {                         // 동시에 확인 → 확장자가 많아도 빠름
+      const im = new Image();
+      im.onload = function () { st[i] = 1; settle(); };
+      im.onerror = function () { st[i] = -1; settle(); };
+      im.src = fresh ? u + "?t=" + Date.now() : u;
+    });
   }
 
   function imageBlock(file, label) {
@@ -1097,7 +1111,7 @@
     stair:  { name: "계단",       icon: "stairs", file: "stair" },
     ladder: { name: "수직사다리", icon: "ladder", file: "ladder" }
   };
-  const EV_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".JPG", ".JPEG", ".PNG", ".WEBP"];   // 사진은 jpg부터 찾음
+  const EV_EXTS = extList("jpg");        // 사진은 jpg부터 찾음
   const EV_LIST = EVAC_POINTS.slice().sort(function (a, b) {
     return (a.type === b.type ? 0 : a.type === "stair" ? -1 : 1) || a.no - b.no;
   });
@@ -1158,8 +1172,9 @@
 
   function viewHome() {
     return '<header class="hero">' + HERO_MOL + '<div class="band-in">' +
-        '<span class="logo-chip' + (imgFound[LOGO_NAME] === false ? ' fallback' : '') + '"><img src="' + esc(imgFound[LOGO_NAME] || IMAGE_BASE + LOGO_NAME + IMG_EXTS[0]) + '" alt="이수스페셜티케미컬" ' +
-          'onload="imgFound[LOGO_NAME]=this.src" onerror="logoErr(this)"><span>이수스페셜티케미컬</span></span>' +
+        '<span class="logo-chip' + (imgFound[LOGO_NAME] === false ? ' fallback' : '') + '">' +
+          '<img data-logo alt="이수스페셜티케미컬"' + (imgFound[LOGO_NAME] ? ' src="' + esc(imgFound[LOGO_NAME]) + '"' : ' hidden') + '>' +
+          '<span>이수스페셜티케미컬</span></span>' +
         '<h1 class="hero-title" tabindex="-1" data-focus>유해화학물질 정보제공</h1>' +
       '</div></header>' +
       '<main class="wrap">' +
@@ -1388,6 +1403,10 @@
    * 7. 이미지 불러오기 (로딩 → 표시 / 실패 시 안내 + 다시 시도)
    * =================================================================== */
   function mountImages(root) {
+    const logo = root.querySelector("img[data-logo][hidden]");
+    if (logo) findImage(LOGO_NAME, IMG_EXTS, function (url) {
+      if (url) { logo.src = url; logo.hidden = false; } else logo.parentNode.classList.add("fallback");
+    });
     root.querySelectorAll(".imgbox").forEach(function (box) {
       const img = box.querySelector("img");
       const hit = box.querySelector(".img-hit");
@@ -1542,7 +1561,7 @@
     evPhoto(p, dir);
   }
 
-  // 사진 불러오기: stair1 → .jpg .jpeg .png .webp (대문자 확장자 포함) 순서로 찾음
+  // 사진 불러오기: stair1 → .jpg 우선, 나머지 확장자도 함께 찾음
   function evPhoto(p, dir) {
     const fr = $("#evp-frame"), seq = ++evSeq, t = EV_TYPES[p.type];
     const label = evName(p);
